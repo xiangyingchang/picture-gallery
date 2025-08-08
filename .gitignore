@@ -48,8 +48,8 @@ coverage/
 tmp/
 temp/
 
-# Uploaded files (if you don't want to commit user uploads)
-public/uploads/
+# Note: 为了GitHub Pages展示，我们需要包含示例图片
+# public/uploads/
 
 # Cache
 .cache/

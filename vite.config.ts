@@ -4,6 +4,7 @@ import react from "@vitejs/plugin-react"
 
 export default defineConfig({
   plugins: [react()],
+  base: '/picture-gallery/', // GitHub Pages 仓库名
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -22,5 +23,9 @@ export default defineConfig({
         changeOrigin: true,
       }
     }
+  },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
   }
 })

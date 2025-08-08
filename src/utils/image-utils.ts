@@ -1,3 +1,5 @@
+import { getAssetPath } from "@/utils/path-utils"
+
 // 图片处理工具函数
 export const convertFileToBase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -43,7 +45,7 @@ export const createPreviewUrl = (file: File): string => {
     return URL.createObjectURL(file)
   } catch (error) {
     console.error('创建预览URL失败:', error)
-    return '/placeholder.svg?height=200&width=200'
+    return getAssetPath('/placeholder.svg?height=200&width=200')
   }
 }
 

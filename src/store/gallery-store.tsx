@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useMemo, useState, useEffect } from "react"
 import { uploadImages, fetchImages, checkServerHealth, deleteImages } from "@/services/api"
+import { getAssetPath } from "@/utils/path-utils"
 
 export type ImageItem = {
   id: string
@@ -11,6 +12,7 @@ export type ImageItem = {
   width?: number
   height?: number
   fromUpload?: boolean
+  filename?: string // 添加 filename 属性
 }
 
 type GalleryContextType = {
@@ -39,35 +41,35 @@ function monthFolderPath(date = new Date()) {
 const initialImages: ImageItem[] = [
   {
     id: "p1",
-    src: "/placeholder.svg?height=600&width=400",
+    src: getAssetPath("/placeholder.svg?height=600&width=400"),
     title: "City Lights",
     createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
     folderPath: monthFolderPath(new Date(Date.now() - 86400000 * 1)),
   },
   {
     id: "p2",
-    src: "/placeholder.svg?height=500&width=400",
+    src: getAssetPath("/placeholder.svg?height=500&width=400"),
     title: "Mountain Lake",
     createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
     folderPath: monthFolderPath(new Date(Date.now() - 86400000 * 2)),
   },
   {
     id: "p3",
-    src: "/placeholder.svg?height=700&width=400",
+    src: getAssetPath("/placeholder.svg?height=700&width=400"),
     title: "Portrait",
     createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
     folderPath: monthFolderPath(new Date(Date.now() - 86400000 * 3)),
   },
   {
     id: "p4",
-    src: "/placeholder.svg?height=450&width=400",
+    src: getAssetPath("/placeholder.svg?height=450&width=400"),
     title: "Workspace",
     createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
     folderPath: monthFolderPath(new Date(Date.now() - 86400000 * 4)),
   },
   {
     id: "p5",
-    src: "/placeholder.svg?height=550&width=400",
+    src: getAssetPath("/placeholder.svg?height=550&width=400"),
     title: "Smile",
     createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
     folderPath: monthFolderPath(new Date(Date.now() - 86400000 * 5)),
@@ -92,12 +94,13 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
           const response = await fetchImages()
           const serverImages = response.images.map(img => ({
             id: img.id,
-            src: img.src,
+            src: getAssetPath(img.src),
             title: img.title,
             createdAt: img.createdAt,
             folderPath: img.folderPath,
             size: img.size,
             fromUpload: img.fromUpload,
+            filename: img.filename,
           }))
           
           // 只使用服务器图片，避免重复 key
@@ -127,12 +130,13 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
       // 转换 API 响应为 ImageItem 格式
       const items: ImageItem[] = response.files.map(file => ({
         id: file.id,
-        src: file.src,
+        src: getAssetPath(file.src),
         title: file.title,
         createdAt: file.createdAt,
         folderPath: file.folderPath,
         size: file.size,
         fromUpload: file.fromUpload,
+        filename: file.filename,
       }))
       
       // 最新优先显示
@@ -151,12 +155,13 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
       const response = await fetchImages()
       const serverImages = response.images.map(img => ({
         id: img.id,
-        src: img.src,
+        src: getAssetPath(img.src),
         title: img.title,
         createdAt: img.createdAt,
         folderPath: img.folderPath,
         size: img.size,
         fromUpload: img.fromUpload,
+        filename: img.filename,
       }))
       
       setImages(serverImages.length > 0 ? serverImages : initialImages)

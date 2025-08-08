@@ -77,6 +77,8 @@ const upload = multer({
 })
 
 // 静态文件服务
+// 注意：这里的路径是服务器端的路径，不需要添加基础路径前缀
+// 前端访问时会通过 getAssetPath 函数添加基础路径前缀
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')))
 
 // 上传接口
@@ -100,7 +102,7 @@ app.post('/api/upload', upload.array('images', 10), (req, res) => {
       
       return {
         id: `img_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-        src: `/${folderPath}/${file.filename}`,
+        src: `/${folderPath}/${file.filename}`, // 前端会通过 getAssetPath 处理这个路径
         title: file.originalname,
         filename: file.filename,
         size: stats.size,
@@ -145,7 +147,7 @@ app.get('/api/images', (req, res) => {
           const relativeSrc = path.join(relativePath, item).replace(/\\/g, '/')
           images.push({
             id: `stored_${item.replace(/\.[^/.]+$/, '')}_${stat.mtime.getTime()}`,
-            src: `/uploads/${relativeSrc}`,
+            src: `/uploads/${relativeSrc}`, // 前端会通过 getAssetPath 处理这个路径
             title: item,
             filename: item,
             size: stat.size,

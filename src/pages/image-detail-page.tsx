@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import MasonryGrid from "@/components/masonry-grid"
 import { ArrowLeft, Download, MoreHorizontal } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
+import { getAssetPath } from "@/utils/path-utils"
 
 export default function ImageDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -48,7 +49,7 @@ export default function ImageDetailPage() {
         <div className="lg:col-span-8">
           <div className="relative overflow-hidden rounded-xl border bg-white">
             <img
-              src={item.src}
+              src={item.src} // 已经在 gallery-store.tsx 中处理过路径
               alt={item.title || "图片"}
               className="w-full h-auto object-contain bg-gray-50"
             />

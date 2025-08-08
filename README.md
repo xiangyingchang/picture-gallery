@@ -96,8 +96,58 @@ node server.js
 npm run build
 ```
 
+生成的静态文件位于 `dist` 目录，可以部署到任何静态文件服务器。
+
+### GitHub Pages 部署
+
+项目已配置 GitHub Actions 工作流，可自动部署到 GitHub Pages：
+
+1. 推送代码到 `main` 分支
+2. GitHub Actions 会自动构建并部署到 GitHub Pages
+3. 访问 `https://[username].github.io/picture-gallery/` 查看部署结果
+
+### 路径处理机制
+
+项目使用了动态基础路径处理机制，确保在不同环境下资源路径都是正确的：
+
+- 在 `vite.config.ts` 中设置了 `base: '/picture-gallery/'`
+- 使用 `path-utils.ts` 中的 `getBasePath()` 和 `getAssetPath()` 函数处理路径
+- 在开发环境中，基础路径为空字符串
+- 在生产环境中，基础路径为 `/picture-gallery`
+
+这确保了图片和其他资源在本地开发和生产环境中都能正确加载。
+
 ### 后端部署
+
 确保服务器环境支持Node.js，并配置好文件上传目录权限。
+
+```bash
+# 安装依赖
+npm install --prefix . express multer cors
+
+# 启动服务器
+node server.js
+```
+
+## 开发者注意事项
+
+### 添加新资源
+
+当添加新的静态资源（如图片、字体等）时，请使用 `getAssetPath` 函数处理路径：
+
+```typescript
+import { getAssetPath } from "@/utils/path-utils";
+
+// 正确的方式
+const imagePath = getAssetPath("/images/example.jpg");
+
+// 错误的方式
+const wrongPath = "/images/example.jpg"; // 在生产环境中可能无法正确加载
+```
+
+### 路由处理
+
+路由已通过 `BrowserRouter` 的 `basename` 属性处理，无需额外处理。
 
 ## 开发者
 

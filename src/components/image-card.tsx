@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import type { ImageItem } from "@/store/gallery-store"
 import { cn } from "@/lib/utils"
 import { Check } from "lucide-react"
+import { getAssetPath } from "@/utils/path-utils"
 
 type Props = {
   item: ImageItem
@@ -138,7 +139,7 @@ export default function ImageCard({
           </div>
         ) : (
           <img
-            src={item.src}
+            src={item.src} // 已经在 gallery-store.tsx 中处理过路径
             alt={item.title || "图片"}
             loading="lazy"
             onLoad={handleLoad}

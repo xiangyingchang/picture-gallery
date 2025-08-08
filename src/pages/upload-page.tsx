@@ -7,6 +7,7 @@ import { useGallery } from "@/store/gallery-store"
 import { Upload, X, CheckCircle2, AlertTriangle, FileX } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { uploadImages } from "@/services/api"
+import { getAssetPath } from "@/utils/path-utils"
 
 type QItem = {
   id: string
@@ -117,8 +118,8 @@ export default function UploadPage() {
         })
       }, 200)
 
-      // 真实上传
-      const response = await uploadImages(formData)
+      // 真实上传 - 使用单个文件数组
+      const response = await uploadImages([item.file])
       clearInterval(progressInterval)
       
       if (response.success && response.files.length > 0) {
@@ -164,7 +165,7 @@ export default function UploadPage() {
     setRunning(true)
     
     const uploadableItems = queueRef.current.filter(item => 
-      item.status === "queued" && item.status !== "unsupported"
+      item.status === "queued"
     )
     
     let successCount = 0

@@ -13,7 +13,7 @@ export default function TopNav() {
 
   const onLogout = () => {
     logout()
-    nav("/gallery", { replace: true })
+    nav("/", { replace: true })
   }
 
   return (
@@ -22,7 +22,7 @@ export default function TopNav() {
         <button
           className="font-semibold tracking-tight text-gray-900"
           aria-label="返回首页"
-          onClick={() => nav("/gallery")}
+          onClick={() => nav("/")}
         >
           三三の头像库
         </button>

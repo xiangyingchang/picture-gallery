@@ -36,11 +36,11 @@ export default function App() {
       <GalleryProvider>
       <Shell>
         <Routes>
-          <Route path="/" element={<Navigate to="/gallery" replace />} />
+          <Route path="/" element={<GalleryPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route
             path="/gallery"
-            element={<GalleryPage />}
+            element={<Navigate to="/" replace />}
           />
           <Route
             path="/upload"
@@ -58,7 +58,7 @@ export default function App() {
               </RequireAuth>
             }
           />
-          <Route path="*" element={<Navigate to="/gallery" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Shell>
       </GalleryProvider>

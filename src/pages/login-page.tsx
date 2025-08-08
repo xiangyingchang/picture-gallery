@@ -23,7 +23,7 @@ export default function LoginPage() {
     try {
       await login(email.trim(), password)
       toast({ title: "登录成功" })
-      const to = loc.state?.from?.pathname || "/gallery"
+      const to = loc.state?.from?.pathname || "/"
       nav(to, { replace: true })
     } catch (err: any) {
       setError(err?.message || "登录失败")

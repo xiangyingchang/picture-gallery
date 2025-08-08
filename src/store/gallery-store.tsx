@@ -107,7 +107,61 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
           setImages(serverImages.length > 0 ? serverImages : initialImages)
           console.log(`✅ 加载了 ${serverImages.length} 张服务器图片`)
         } else {
-          console.log('⚠️ 服务器未连接，使用演示数据')
+          console.log('⚠️ 服务器未连接，使用本地图片数据')
+          
+          // 创建本地图片数据
+          const localImages: ImageItem[] = [
+            {
+              id: "local1",
+              src: getAssetPath("/uploads/2025/08/IMG_0089.JPG"),
+              title: "IMG_0089",
+              createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+              folderPath: "uploads/2025/08",
+              fromUpload: true
+            },
+            {
+              id: "local2",
+              src: getAssetPath("/uploads/2025/08/IMG_0104.JPG"),
+              title: "IMG_0104",
+              createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+              folderPath: "uploads/2025/08",
+              fromUpload: true
+            },
+            {
+              id: "local3",
+              src: getAssetPath("/uploads/2025/08/IMG_0120.JPG"),
+              title: "IMG_0120",
+              createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+              folderPath: "uploads/2025/08",
+              fromUpload: true
+            },
+            {
+              id: "local4",
+              src: getAssetPath("/uploads/2025/08/IMG_0162.JPG"),
+              title: "IMG_0162",
+              createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+              folderPath: "uploads/2025/08",
+              fromUpload: true
+            },
+            {
+              id: "local5",
+              src: getAssetPath("/uploads/2025/08/7dbe04adb3713da2c78a8e0f3c2663aa.jpg"),
+              title: "7dbe04adb3713da2c78a8e0f3c2663aa",
+              createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
+              folderPath: "uploads/2025/08",
+              fromUpload: true
+            },
+            {
+              id: "local6",
+              src: getAssetPath("/uploads/2025/08/4346d1e6d04bf2e4b66a5aeccac4234d.jpg"),
+              title: "4346d1e6d04bf2e4b66a5aeccac4234d",
+              createdAt: new Date(Date.now() - 86400000 * 6).toISOString(),
+              folderPath: "uploads/2025/08",
+              fromUpload: true
+            }
+          ];
+          
+          setImages(localImages);
         }
       } catch (error) {
         console.error('❌ 初始化图片失败:', error)

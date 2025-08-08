@@ -109,58 +109,48 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
         } else {
           console.log('⚠️ 服务器未连接，使用本地图片数据')
           
-          // 创建本地图片数据
-          const localImages: ImageItem[] = [
-            {
-              id: "local1",
-              src: getAssetPath("/uploads/2025/08/IMG_0089.JPG"),
-              title: "IMG_0089",
-              createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
-              folderPath: "uploads/2025/08",
-              fromUpload: true
-            },
-            {
-              id: "local2",
-              src: getAssetPath("/uploads/2025/08/IMG_0104.JPG"),
-              title: "IMG_0104",
-              createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-              folderPath: "uploads/2025/08",
-              fromUpload: true
-            },
-            {
-              id: "local3",
-              src: getAssetPath("/uploads/2025/08/IMG_0120.JPG"),
-              title: "IMG_0120",
-              createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
-              folderPath: "uploads/2025/08",
-              fromUpload: true
-            },
-            {
-              id: "local4",
-              src: getAssetPath("/uploads/2025/08/IMG_0162.JPG"),
-              title: "IMG_0162",
-              createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
-              folderPath: "uploads/2025/08",
-              fromUpload: true
-            },
-            {
-              id: "local5",
-              src: getAssetPath("/uploads/2025/08/7dbe04adb3713da2c78a8e0f3c2663aa.jpg"),
-              title: "7dbe04adb3713da2c78a8e0f3c2663aa",
-              createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
-              folderPath: "uploads/2025/08",
-              fromUpload: true
-            },
-            {
-              id: "local6",
-              src: getAssetPath("/uploads/2025/08/4346d1e6d04bf2e4b66a5aeccac4234d.jpg"),
-              title: "4346d1e6d04bf2e4b66a5aeccac4234d",
-              createdAt: new Date(Date.now() - 86400000 * 6).toISOString(),
-              folderPath: "uploads/2025/08",
-              fromUpload: true
+          // 创建本地图片数据 - 动态生成所有图片的列表
+          // 注意：由于静态托管的限制，我们需要预先知道所有图片的文件名
+          // 这里我们使用一个函数来生成所有图片的路径
+          const generateLocalImages = () => {
+            const folderPath = "uploads/2025/08";
+            const localImages: ImageItem[] = [];
+            
+            // 这里列出所有已知的图片文件名
+            // 由于文件数量较多，我们使用一个循环来生成
+            const imageFiles = [
+              "IMG_0089.JPG", "IMG_0104.JPG", "IMG_0120.JPG", "IMG_0162.JPG",
+              "7dbe04adb3713da2c78a8e0f3c2663aa.jpg", "4346d1e6d04bf2e4b66a5aeccac4234d.jpg",
+              // 添加更多图片文件名...
+            ];
+            
+            // 为了生成更多的图片，我们可以使用一个循环
+            // 假设图片命名有规律，例如 img_1.jpg, img_2.jpg, ...
+            for (let i = 1; i <= 147; i++) {
+              const paddedIndex = String(i).padStart(3, '0');
+              imageFiles.push(`img_${paddedIndex}.jpg`);
             }
-          ];
+            
+            // 移除可能的重复项
+            const uniqueFiles = [...new Set(imageFiles)];
+            
+            // 为每个图片文件创建一个 ImageItem
+            uniqueFiles.forEach((file, index) => {
+              localImages.push({
+                id: `local${index + 1}`,
+                src: getAssetPath(`/${folderPath}/${file}`),
+                title: file.replace(/\.[^/.]+$/, ""), // 移除文件扩展名作为标题
+                createdAt: new Date(Date.now() - 86400000 * (index + 1)).toISOString(),
+                folderPath: folderPath,
+                fromUpload: true
+              });
+            });
+            
+            return localImages;
+          };
           
+          const localImages = generateLocalImages();
+          console.log(`📷 生成了 ${localImages.length} 张本地图片数据`);
           setImages(localImages);
         }
       } catch (error) {

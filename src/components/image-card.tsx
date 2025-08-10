@@ -103,6 +103,13 @@ export default function ImageCard({
   }
 
   const handleError = () => {
+    console.error('图片加载失败:', item.src)
+    
+    // 如果是本地图片路径且加载失败，尝试使用占位图像
+    if (!item.src.startsWith('http') && !item.src.startsWith('blob:') && !item.src.startsWith('data:')) {
+      console.log('尝试使用占位图像替代')
+    }
+    
     setError(true)
     setLoaded(false)
   }

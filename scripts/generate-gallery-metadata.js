@@ -68,8 +68,8 @@ function scanImagesDirectory() {
     }
   });
 
-  // 按修改时间排序（最新的在前）
-  images.sort((a, b) => new Date(b.modified) - new Date(a.modified));
+  // 按创建时间排序（最新的在前）
+  images.sort((a, b) => new Date(b.created) - new Date(a.created));
   
   return images;
 }

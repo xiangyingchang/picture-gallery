@@ -135,7 +135,7 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
         id: img.id,
         src: img.src,
         title: img.title,
-        createdAt: img.created,
+        createdAt: img.created, // 使用 created 字段作为 createdAt
         folderPath: img.path.replace(`/${img.filename}`, ''),
         size: img.size,
         fromUpload: true,

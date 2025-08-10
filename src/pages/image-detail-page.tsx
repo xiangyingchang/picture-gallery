@@ -60,7 +60,7 @@ export default function ImageDetailPage() {
             <h3 className="text-sm font-medium text-gray-900">图片信息</h3>
             <div className="mt-3 space-y-2 text-sm text-gray-600">
               <div className="flex justify-between"><span>文件名</span><span className="truncate max-w-[60%] text-right">{item.title || "-"}</span></div>
-              <div className="flex justify-between"><span>创建时间</span><span>{new Date(item.createdAt).toLocaleString()}</span></div>
+              <div className="flex justify-between"><span>创建时间</span><span>{new Date(item.createdAt).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span></div>
               <div className="flex justify-between"><span>存储目录</span><span>{item.folderPath}</span></div>
               {typeof item.size === "number" && (
                 <div className="flex justify-between"><span>大小</span><span>{(item.size / 1024 / 1024).toFixed(2)} MB</span></div>

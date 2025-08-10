@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
     "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "gallery:update": "node scripts/update-gallery.js",
     "gallery:watch": "node scripts/watch-images.js",
-    "gallery:watch-auto": "AUTO_COMMIT=true node scripts/watch-images.js",
-    "gallery:watch-full": "AUTO_COMMIT=true AUTO_PUSH=true node scripts/watch-images.js"
+    "gallery:watch-auto": "node scripts/watch-images.js --auto",
+    "gallery:test": "node scripts/test-automation.js",
+    "gallery:metadata": "node scripts/generate-gallery-metadata.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

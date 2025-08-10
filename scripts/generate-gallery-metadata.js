@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const exifr = require('exifr');
 
 /**
  * 生成图片库元数据文件
@@ -18,16 +19,34 @@ function generateFileHash(filePath) {
   return crypto.createHash('md5').update(fileBuffer).digest('hex');
 }
 
-function getFileStats(filePath) {
+async function getFileStats(filePath) {
   const stats = fs.statSync(filePath);
+  let actualCreatedTime = stats.birthtime;
+  
+  try {
+    // 尝试读取 EXIF 数据获取真正的拍摄时间
+    const exifData = await exifr.parse(filePath);
+    if (exifData && exifData.DateTimeOriginal) {
+      actualCreatedTime = new Date(exifData.DateTimeOriginal);
+      console.log(`📸 EXIF 拍摄时间: ${path.basename(filePath)} -> ${actualCreatedTime.toISOString()}`);
+    } else if (exifData && exifData.DateTime) {
+      actualCreatedTime = new Date(exifData.DateTime);
+      console.log(`📸 EXIF 修改时间: ${path.basename(filePath)} -> ${actualCreatedTime.toISOString()}`);
+    } else {
+      console.log(`⚠️  无 EXIF 数据: ${path.basename(filePath)} -> 使用文件创建时间`);
+    }
+  } catch (error) {
+    console.log(`⚠️  EXIF 读取失败: ${path.basename(filePath)} -> 使用文件创建时间`);
+  }
+  
   return {
     size: stats.size,
-    created: stats.birthtime.toISOString(),
+    created: actualCreatedTime.toISOString(),
     modified: stats.mtime.toISOString()
   };
 }
 
-function scanImagesDirectory() {
+async function scanImagesDirectory() {
   console.log('🔍 扫描图片目录:', UPLOADS_DIR);
   
   if (!fs.existsSync(UPLOADS_DIR)) {
@@ -38,14 +57,15 @@ function scanImagesDirectory() {
   const files = fs.readdirSync(UPLOADS_DIR);
   const images = [];
 
-  files.forEach((filename, index) => {
+  // 使用 for...of 循环支持异步操作
+  for (const filename of files) {
     const filePath = path.join(UPLOADS_DIR, filename);
     const ext = path.extname(filename).toLowerCase();
     
     // 检查是否为支持的图片格式
     if (SUPPORTED_FORMATS.includes(ext) && fs.statSync(filePath).isFile()) {
       try {
-        const stats = getFileStats(filePath);
+        const stats = await getFileStats(filePath);
         const hash = generateFileHash(filePath);
         
         const imageItem = {
@@ -66,7 +86,7 @@ function scanImagesDirectory() {
         console.error(`❌ 处理图片失败: ${filename}`, error.message);
       }
     }
-  });
+  }
 
   // 按创建时间排序（最新的在前）
   images.sort((a, b) => new Date(b.created) - new Date(a.created));
@@ -74,10 +94,10 @@ function scanImagesDirectory() {
   return images;
 }
 
-function generateMetadata() {
+async function generateMetadata() {
   console.log('🚀 开始生成图片库元数据...');
   
-  const images = scanImagesDirectory();
+  const images = await scanImagesDirectory();
   
   const metadata = {
     generated: new Date().toISOString(),
@@ -98,14 +118,16 @@ function generateMetadata() {
 
 // 如果直接运行此脚本
 if (require.main === module) {
-  try {
-    const metadata = generateMetadata();
-    console.log('🎉 图片库元数据生成成功!');
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ 生成元数据失败:', error);
-    process.exit(1);
-  }
+  (async () => {
+    try {
+      const metadata = await generateMetadata();
+      console.log('🎉 图片库元数据生成成功!');
+      process.exit(0);
+    } catch (error) {
+      console.error('❌ 生成元数据失败:', error);
+      process.exit(1);
+    }
+  })();
 }
 
 module.exports = { generateMetadata, scanImagesDirectory };

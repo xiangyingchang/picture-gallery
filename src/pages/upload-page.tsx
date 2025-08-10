@@ -4,10 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useGallery } from "@/store/gallery-store"
-import { Upload, X, CheckCircle2, AlertTriangle, FileX } from "lucide-react"
+import { Upload, CheckCircle2, AlertTriangle, FileX } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { uploadImages } from "@/services/api"
-import { getAssetPath } from "@/utils/path-utils"
 
 type QItem = {
   id: string
@@ -198,11 +197,6 @@ export default function UploadPage() {
     }
   }
 
-  const handleClear = () => {
-    Object.values(timersRef.current).forEach((t) => window.clearTimeout(t))
-    timersRef.current = {}
-    setQueue([])
-  }
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-6">

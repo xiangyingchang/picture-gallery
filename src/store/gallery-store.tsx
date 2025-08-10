@@ -86,8 +86,6 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
   // 使用动态图片加载 Hook
   const {
     images: dynamicImages,
-    loading: dynamicLoading,
-    error: dynamicError,
     refreshImages: refreshDynamicImages
   } = useDynamicGallery()
 

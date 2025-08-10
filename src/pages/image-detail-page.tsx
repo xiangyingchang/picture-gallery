@@ -1,11 +1,9 @@
-import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { useGallery } from "@/store/gallery-store"
 import { Button } from "@/components/ui/button"
 import MasonryGrid from "@/components/masonry-grid"
 import { ArrowLeft, Download, MoreHorizontal } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
-import { getAssetPath } from "@/utils/path-utils"
 
 export default function ImageDetailPage() {
   const { id } = useParams<{ id: string }>()

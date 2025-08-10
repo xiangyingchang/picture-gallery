@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom"
 import type { ImageItem } from "@/store/gallery-store"
 import { cn } from "@/lib/utils"
 import { Check } from "lucide-react"
-import { getAssetPath } from "@/utils/path-utils"
 
 type Props = {
   item: ImageItem

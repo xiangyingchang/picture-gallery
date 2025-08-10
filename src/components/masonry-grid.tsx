@@ -1,4 +1,3 @@
-import React from "react"
 import ImageCard from "./image-card"
 import type { ImageItem } from "@/store/gallery-store"
 

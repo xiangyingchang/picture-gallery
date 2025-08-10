@@ -1,10 +1,9 @@
-import React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/context/auth-context"
-import { ImagePlus, LogOut, Upload, LogIn, User } from "lucide-react"
+import { LogOut, Upload, LogIn, User } from "lucide-react"
 
 export default function TopNav() {
   const nav = useNavigate()

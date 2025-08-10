@@ -2,15 +2,12 @@ import React from "react"
 import MasonryGrid from "@/components/masonry-grid"
 import { useGallery } from "@/store/gallery-store"
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useNavigate } from "react-router-dom"
 import { useToast } from "@/hooks/use-toast"
-import { Edit3, Trash2, X, CheckSquare } from "lucide-react"
+import { Trash2, X, CheckSquare } from "lucide-react"
 
 export default function GalleryPage() {
-  const nav = useNavigate()
   const { toast } = useToast()
   const { 
     images, 
@@ -22,7 +19,7 @@ export default function GalleryPage() {
     clearSelection,
     deleteSelectedImages 
   } = useGallery()
-  const [sort, setSort] = React.useState<"newest" | "oldest">("newest")
+  const [sort] = React.useState<"newest" | "oldest">("newest")
   const [isDeleting, setIsDeleting] = React.useState(false)
 
   React.useEffect(() => {

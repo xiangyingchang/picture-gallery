@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useGallery } from "@/store/gallery-store"
 import { Upload, CheckCircle2, AlertTriangle, FileX, Github } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { getGitHubService, initGitHubService } from "@/services/github-api"
@@ -19,7 +18,6 @@ type QItem = {
 }
 
 export default function UploadPage() {
-  const { refreshImages } = useGallery()
   const { toast } = useToast()
   const [queue, setQueue] = React.useState<QItem[]>([])
   const [dragOver, setDragOver] = React.useState(false)

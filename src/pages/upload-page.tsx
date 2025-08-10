@@ -25,7 +25,6 @@ export default function UploadPage() {
   const [running, setRunning] = React.useState(false)
 
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const timersRef = React.useRef<Record<string, number>>({})
 
   // 检测HEIF格式文件
   const isHeifFormat = (file: File): boolean => {

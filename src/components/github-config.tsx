@@ -138,7 +138,7 @@ export default function GitHubConfigComponent({ onConfigured }: GitHubConfigProp
             <CardTitle className="flex items-center gap-2">
               <Settings className="h-5 w-5" />
               GitHub 配置
-              <Shield className="h-4 w-4 text-green-600" title="数据已加密存储" />
+              <Shield className="h-4 w-4 text-green-600" />
             </CardTitle>
             <CardDescription>
               配置 GitHub API 以支持直接上传图片到仓库（数据将被加密存储）

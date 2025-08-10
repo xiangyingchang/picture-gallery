@@ -1,0 +1,308 @@
+name: Smart Gallery Auto Update
+
+on:
+  # 当有文件推送到 main 分支时触发
+  push:
+    branches: [ main ]
+    paths:
+      - 'public/uploads/**'
+  
+  # 允许手动触发
+  workflow_dispatch:
+  
+  # 定时检查（可选，每小时检查一次是否有新图片）
+  schedule:
+    - cron: '0 * * * *'
+
+# 权限设置
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  smart-update:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Install automation dependencies
+      run: npm install chokidar sharp --save-dev
+    
+    - name: Scan for new images
+      id: scan_images
+      run: |
+        echo "🔍 扫描图片目录..."
+        
+        # 创建图片目录（如果不存在）
+        mkdir -p public/uploads/2025/08
+        
+        # 扫描所有支持的图片格式
+        IMAGES=$(find public/uploads -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" -o -iname "*.gif" \) 2>/dev/null || true)
+        IMAGE_COUNT=$(echo "$IMAGES" | grep -c . || echo "0")
+        
+        echo "发现 $IMAGE_COUNT 张图片"
+        echo "image_count=$IMAGE_COUNT" >> $GITHUB_OUTPUT
+        
+        if [ $IMAGE_COUNT -gt 0 ]; then
+          echo "has_images=true" >> $GITHUB_OUTPUT
+          
+          # 获取最新的图片信息
+          LATEST_IMAGE=$(echo "$IMAGES" | head -1)
+          if [ -n "$LATEST_IMAGE" ]; then
+            LATEST_NAME=$(basename "$LATEST_IMAGE")
+            LATEST_SIZE=$(stat -f%z "$LATEST_IMAGE" 2>/dev/null || stat -c%s "$LATEST_IMAGE" 2>/dev/null || echo "0")
+            echo "latest_image=$LATEST_NAME" >> $GITHUB_OUTPUT
+            echo "latest_size=$LATEST_SIZE" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "has_images=false" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Optimize images (optional)
+      if: steps.scan_images.outputs.has_images == 'true'
+      run: |
+        echo "🖼️ 优化图片..."
+        
+        # 创建图片优化脚本
+        cat > optimize-images.js << 'EOF'
+        const sharp = require('sharp');
+        const fs = require('fs');
+        const path = require('path');
+        
+        async function optimizeImages() {
+          const uploadsDir = 'public/uploads';
+          
+          function findImages(dir) {
+            const files = [];
+            const items = fs.readdirSync(dir, { withFileTypes: true });
+            
+            for (const item of items) {
+              const fullPath = path.join(dir, item.name);
+              if (item.isDirectory()) {
+                files.push(...findImages(fullPath));
+              } else if (/\.(jpg|jpeg|png)$/i.test(item.name)) {
+                files.push(fullPath);
+              }
+            }
+            return files;
+          }
+          
+          const imageFiles = findImages(uploadsDir);
+          console.log(`找到 ${imageFiles.length} 张需要优化的图片`);
+          
+          for (const imagePath of imageFiles) {
+            try {
+              const stats = fs.statSync(imagePath);
+              // 只优化大于 500KB 的图片
+              if (stats.size > 500 * 1024) {
+                console.log(`优化图片: ${imagePath} (${(stats.size / 1024).toFixed(2)} KB)`);
+                
+                await sharp(imagePath)
+                  .resize(1920, 1920, { 
+                    fit: 'inside', 
+                    withoutEnlargement: true 
+                  })
+                  .jpeg({ 
+                    quality: 85, 
+                    progressive: true 
+                  })
+                  .toFile(imagePath + '.optimized');
+                
+                // 替换原文件
+                fs.renameSync(imagePath + '.optimized', imagePath);
+                
+                const newStats = fs.statSync(imagePath);
+                console.log(`优化完成: ${(newStats.size / 1024).toFixed(2)} KB`);
+              }
+            } catch (error) {
+              console.log(`优化失败 ${imagePath}:`, error.message);
+            }
+          }
+        }
+        
+        optimizeImages().catch(console.error);
+        EOF
+        
+        # 运行图片优化（如果 sharp 可用）
+        node optimize-images.js || echo "图片优化跳过"
+    
+    - name: Generate image metadata
+      if: steps.scan_images.outputs.has_images == 'true'
+      run: |
+        echo "📊 生成图片元数据..."
+        
+        # 创建元数据生成脚本
+        cat > generate-metadata.js << 'EOF'
+        const fs = require('fs');
+        const path = require('path');
+        const crypto = require('crypto');
+        
+        function generateMetadata() {
+          const uploadsDir = 'public/uploads';
+          const metadataFile = 'public/gallery-metadata.json';
+          
+          function findImages(dir) {
+            const files = [];
+            const items = fs.readdirSync(dir, { withFileTypes: true });
+            
+            for (const item of items) {
+              const fullPath = path.join(dir, item.name);
+              if (item.isDirectory()) {
+                files.push(...findImages(fullPath));
+              } else if (/\.(jpg|jpeg|png|webp|gif)$/i.test(item.name)) {
+                files.push(fullPath);
+              }
+            }
+            return files;
+          }
+          
+          const imageFiles = findImages(uploadsDir);
+          const metadata = {
+            generated: new Date().toISOString(),
+            count: imageFiles.length,
+            images: []
+          };
+          
+          for (const imagePath of imageFiles) {
+            try {
+              const stats = fs.statSync(imagePath);
+              const relativePath = imagePath.replace('public/', '');
+              const filename = path.basename(imagePath);
+              const hash = crypto.createHash('md5').update(fs.readFileSync(imagePath)).digest('hex');
+              
+              metadata.images.push({
+                id: hash.substring(0, 8),
+                filename: filename,
+                path: relativePath,
+                size: stats.size,
+                created: stats.birthtime.toISOString(),
+                modified: stats.mtime.toISOString(),
+                hash: hash
+              });
+            } catch (error) {
+              console.log(`处理文件失败 ${imagePath}:`, error.message);
+            }
+          }
+          
+          // 按修改时间倒序排列
+          metadata.images.sort((a, b) => new Date(b.modified) - new Date(a.modified));
+          
+          fs.writeFileSync(metadataFile, JSON.stringify(metadata, null, 2));
+          console.log(`生成元数据文件: ${metadataFile}`);
+          console.log(`包含 ${metadata.images.length} 张图片的信息`);
+        }
+        
+        generateMetadata();
+        EOF
+        
+        node generate-metadata.js
+    
+    - name: Update gallery store
+      if: steps.scan_images.outputs.has_images == 'true'
+      run: |
+        echo "🔄 更新图片库代码..."
+        node scripts/update-gallery.js
+        
+        # 检查是否有代码更改
+        if git diff --quiet src/store/gallery-store.tsx; then
+          echo "代码无需更新"
+          echo "code_updated=false" >> $GITHUB_ENV
+        else
+          echo "代码已更新"
+          echo "code_updated=true" >> $GITHUB_ENV
+        fi
+    
+    - name: Commit changes
+      if: env.code_updated == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "Smart Gallery Bot"
+        
+        # 添加所有更改
+        git add .
+        
+        # 创建智能提交信息
+        COMMIT_MSG="🤖 自动更新图片库 (${{ steps.scan_images.outputs.image_count }} 张图片)
+
+        📸 最新图片: ${{ steps.scan_images.outputs.latest_image }}
+        📊 文件大小: ${{ steps.scan_images.outputs.latest_size }} bytes
+        🕒 更新时间: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        🔧 处理方式: GitHub Actions 自动化
+        
+        ✨ 功能更新:
+        - 自动扫描并识别新图片
+        - 自动优化图片质量和大小
+        - 自动生成图片元数据
+        - 自动更新前端代码
+        - 自动部署到 GitHub Pages
+        
+        [🤖 Smart Gallery Bot]"
+        
+        git commit -m "$COMMIT_MSG"
+        echo "✅ 更改已提交"
+    
+    - name: Push changes
+      if: env.code_updated == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: main
+    
+    - name: Build project
+      run: |
+        echo "🏗️ 构建项目..."
+        npm run build
+    
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      with:
+        enablement: true
+    
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './dist'
+    
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+    
+    - name: Generate deployment report
+      run: |
+        echo "## 🚀 智能图片库部署完成" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📊 部署统计" >> $GITHUB_STEP_SUMMARY
+        echo "- **图片总数**: ${{ steps.scan_images.outputs.image_count }} 张" >> $GITHUB_STEP_SUMMARY
+        echo "- **最新图片**: ${{ steps.scan_images.outputs.latest_image }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **代码更新**: ${{ env.code_updated == 'true' && '✅ 已更新' || '⏭️ 无需更新' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **部署状态**: ✅ 成功" >> $GITHUB_STEP_SUMMARY
+        echo "- **部署时间**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🌐 访问链接" >> $GITHUB_STEP_SUMMARY
+        echo "- **网站地址**: https://xiangyingchang.github.io/picture-gallery/" >> $GITHUB_STEP_SUMMARY
+        echo "- **元数据**: https://xiangyingchang.github.io/picture-gallery/gallery-metadata.json" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🎯 下次使用" >> $GITHUB_STEP_SUMMARY
+        echo "只需将图片文件添加到 \`public/uploads/\` 目录并推送到 GitHub，系统会自动处理一切！" >> $GITHUB_STEP_SUMMARY
+    
+    - name: Notify completion (optional)
+      if: steps.scan_images.outputs.has_images == 'true'
+      run: |
+        echo "🎉 自动化流程完成！"
+        echo "📸 处理了 ${{ steps.scan_images.outputs.image_count }} 张图片"
+        echo "🌐 网站已更新: https://xiangyingchang.github.io/picture-gallery/"

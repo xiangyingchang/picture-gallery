@@ -40,9 +40,6 @@ jobs:
     - name: Install dependencies
       run: npm ci
     
-    - name: Install automation dependencies
-      run: npm install chokidar sharp --save-dev
-    
     - name: Scan for new images
       id: scan_images
       run: |
@@ -73,162 +70,26 @@ jobs:
           echo "has_images=false" >> $GITHUB_OUTPUT
         fi
     
-    - name: Optimize images (optional)
-      if: steps.scan_images.outputs.has_images == 'true'
-      run: |
-        echo "🖼️ 优化图片..."
-        
-        # 创建图片优化脚本
-        cat > optimize-images.js << 'EOF'
-        const sharp = require('sharp');
-        const fs = require('fs');
-        const path = require('path');
-        
-        async function optimizeImages() {
-          const uploadsDir = 'public/uploads';
-          
-          function findImages(dir) {
-            const files = [];
-            const items = fs.readdirSync(dir, { withFileTypes: true });
-            
-            for (const item of items) {
-              const fullPath = path.join(dir, item.name);
-              if (item.isDirectory()) {
-                files.push(...findImages(fullPath));
-              } else if (/\.(jpg|jpeg|png)$/i.test(item.name)) {
-                files.push(fullPath);
-              }
-            }
-            return files;
-          }
-          
-          const imageFiles = findImages(uploadsDir);
-          console.log(`找到 ${imageFiles.length} 张需要优化的图片`);
-          
-          for (const imagePath of imageFiles) {
-            try {
-              const stats = fs.statSync(imagePath);
-              // 只优化大于 500KB 的图片
-              if (stats.size > 500 * 1024) {
-                console.log(`优化图片: ${imagePath} (${(stats.size / 1024).toFixed(2)} KB)`);
-                
-                await sharp(imagePath)
-                  .resize(1920, 1920, { 
-                    fit: 'inside', 
-                    withoutEnlargement: true 
-                  })
-                  .jpeg({ 
-                    quality: 85, 
-                    progressive: true 
-                  })
-                  .toFile(imagePath + '.optimized');
-                
-                // 替换原文件
-                fs.renameSync(imagePath + '.optimized', imagePath);
-                
-                const newStats = fs.statSync(imagePath);
-                console.log(`优化完成: ${(newStats.size / 1024).toFixed(2)} KB`);
-              }
-            } catch (error) {
-              console.log(`优化失败 ${imagePath}:`, error.message);
-            }
-          }
-        }
-        
-        optimizeImages().catch(console.error);
-        EOF
-        
-        # 运行图片优化（如果 sharp 可用）
-        node optimize-images.js || echo "图片优化跳过"
-    
     - name: Generate image metadata
       if: steps.scan_images.outputs.has_images == 'true'
       run: |
         echo "📊 生成图片元数据..."
-        
-        # 创建元数据生成脚本
-        cat > generate-metadata.js << 'EOF'
-        const fs = require('fs');
-        const path = require('path');
-        const crypto = require('crypto');
-        
-        function generateMetadata() {
-          const uploadsDir = 'public/uploads';
-          const metadataFile = 'public/gallery-metadata.json';
-          
-          function findImages(dir) {
-            const files = [];
-            const items = fs.readdirSync(dir, { withFileTypes: true });
-            
-            for (const item of items) {
-              const fullPath = path.join(dir, item.name);
-              if (item.isDirectory()) {
-                files.push(...findImages(fullPath));
-              } else if (/\.(jpg|jpeg|png|webp|gif)$/i.test(item.name)) {
-                files.push(fullPath);
-              }
-            }
-            return files;
-          }
-          
-          const imageFiles = findImages(uploadsDir);
-          const metadata = {
-            generated: new Date().toISOString(),
-            count: imageFiles.length,
-            images: []
-          };
-          
-          for (const imagePath of imageFiles) {
-            try {
-              const stats = fs.statSync(imagePath);
-              const relativePath = imagePath.replace('public/', '');
-              const filename = path.basename(imagePath);
-              const hash = crypto.createHash('md5').update(fs.readFileSync(imagePath)).digest('hex');
-              
-              metadata.images.push({
-                id: hash.substring(0, 8),
-                filename: filename,
-                path: relativePath,
-                size: stats.size,
-                created: stats.birthtime.toISOString(),
-                modified: stats.mtime.toISOString(),
-                hash: hash
-              });
-            } catch (error) {
-              console.log(`处理文件失败 ${imagePath}:`, error.message);
-            }
-          }
-          
-          // 按修改时间倒序排列
-          metadata.images.sort((a, b) => new Date(b.modified) - new Date(a.modified));
-          
-          fs.writeFileSync(metadataFile, JSON.stringify(metadata, null, 2));
-          console.log(`生成元数据文件: ${metadataFile}`);
-          console.log(`包含 ${metadata.images.length} 张图片的信息`);
-        }
-        
-        generateMetadata();
-        EOF
-        
-        node generate-metadata.js
+        npm run gallery:metadata
     
-    - name: Update gallery store
-      if: steps.scan_images.outputs.has_images == 'true'
+    - name: Check for changes
+      id: check_changes
       run: |
-        echo "🔄 更新图片库代码..."
-        node scripts/update-gallery.js
-        
-        # 检查是否有代码更改
-        if git diff --quiet src/store/gallery-store.tsx; then
-          echo "代码无需更新"
-          echo "code_updated=false" >> $GITHUB_ENV
+        # 检查是否有文件更改
+        if git diff --quiet; then
+          echo "无文件更改"
+          echo "has_changes=false" >> $GITHUB_OUTPUT
         else
-          echo "代码已更新"
-          echo "code_updated=true" >> $GITHUB_ENV
+          echo "检测到文件更改"
+          echo "has_changes=true" >> $GITHUB_OUTPUT
         fi
     
     - name: Commit changes
-      if: env.code_updated == 'true'
+      if: steps.check_changes.outputs.has_changes == 'true'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "Smart Gallery Bot"
@@ -246,9 +107,7 @@ jobs:
         
         ✨ 功能更新:
         - 自动扫描并识别新图片
-        - 自动优化图片质量和大小
         - 自动生成图片元数据
-        - 自动更新前端代码
         - 自动部署到 GitHub Pages
         
         [🤖 Smart Gallery Bot]"
@@ -257,7 +116,7 @@ jobs:
         echo "✅ 更改已提交"
     
     - name: Push changes
-      if: env.code_updated == 'true'
+      if: steps.check_changes.outputs.has_changes == 'true'
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -289,7 +148,7 @@ jobs:
         echo "### 📊 部署统计" >> $GITHUB_STEP_SUMMARY
         echo "- **图片总数**: ${{ steps.scan_images.outputs.image_count }} 张" >> $GITHUB_STEP_SUMMARY
         echo "- **最新图片**: ${{ steps.scan_images.outputs.latest_image }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **代码更新**: ${{ env.code_updated == 'true' && '✅ 已更新' || '⏭️ 无需更新' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **文件更改**: ${{ steps.check_changes.outputs.has_changes == 'true' && '✅ 已更新' || '⏭️ 无需更新' }}" >> $GITHUB_STEP_SUMMARY
         echo "- **部署状态**: ✅ 成功" >> $GITHUB_STEP_SUMMARY
         echo "- **部署时间**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY

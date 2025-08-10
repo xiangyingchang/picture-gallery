@@ -5,9 +5,9 @@
 
 import CryptoJS from 'crypto-js'
 
-// 从环境变量获取配置，如果没有则使用默认值（开发环境）
+// 从环境变量获取配置，如果没有则使用安全的默认值
 const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME || '三三'
-const ADMIN_PASSWORD_HASH = import.meta.env.VITE_ADMIN_PASSWORD_HASH || hashPassword('sansan')
+const ADMIN_PASSWORD_HASH = import.meta.env.VITE_ADMIN_PASSWORD_HASH || '2bbf669bed5460f8da92489d1622894558e71893ca45df6496f0be1eea415a7d'
 
 /**
  * 生成密码哈希

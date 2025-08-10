@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "gallery:update": "node scripts/update-gallery.js",
+    "gallery:watch": "node scripts/watch-images.js",
+    "gallery:watch-auto": "AUTO_COMMIT=true node scripts/watch-images.js",
+    "gallery:watch-full": "AUTO_COMMIT=true AUTO_PUSH=true node scripts/watch-images.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -68,6 +72,7 @@
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.2.1",
+    "chokidar": "^3.6.0",
     "eslint": "^8.56.0",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",

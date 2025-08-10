@@ -1,0 +1,24 @@
+{
+  "name": "gallery-automation-scripts",
+  "version": "1.0.0",
+  "description": "自动化图片库管理脚本",
+  "scripts": {
+    "update-gallery": "node update-gallery.js",
+    "watch-images": "node watch-images.js",
+    "start-watcher": "AUTO_COMMIT=false AUTO_PUSH=false node watch-images.js",
+    "start-watcher-auto": "AUTO_COMMIT=true AUTO_PUSH=false node watch-images.js",
+    "start-watcher-full": "AUTO_COMMIT=true AUTO_PUSH=true node watch-images.js"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "automation",
+    "image-gallery",
+    "file-watcher",
+    "react"
+  ],
+  "author": "Auto Gallery System",
+  "license": "MIT"
+}

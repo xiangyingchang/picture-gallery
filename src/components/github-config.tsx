@@ -5,12 +5,15 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { Settings, CheckCircle2, AlertTriangle, Eye, EyeOff } from 'lucide-react'
+import { Settings, CheckCircle2, AlertTriangle, Eye, EyeOff, Shield } from 'lucide-react'
 import { initGitHubService, type GitHubConfig } from '@/services/github-api'
+import { secureSetItem, secureGetItem, secureRemoveItem } from '@/utils/crypto-utils'
 
 interface GitHubConfigProps {
   onConfigured?: (configured: boolean) => void
 }
+
+const GITHUB_CONFIG_KEY = 'github_config_secure'
 
 export default function GitHubConfigComponent({ onConfigured }: GitHubConfigProps) {
   const [config, setConfig] = useState<GitHubConfig>({
@@ -25,23 +28,36 @@ export default function GitHubConfigComponent({ onConfigured }: GitHubConfigProp
   const [isTesting, setIsTesting] = useState(false)
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null)
 
-  // 从 localStorage 加载配置
+  // 从加密存储加载配置
   useEffect(() => {
-    const savedConfig = localStorage.getItem('github-config')
-    if (savedConfig) {
-      try {
-        const parsed = JSON.parse(savedConfig)
-        setConfig(parsed)
-        initGitHubService(parsed)
+    const savedConfig = secureGetItem<GitHubConfig>(GITHUB_CONFIG_KEY)
+    if (savedConfig && savedConfig.owner && savedConfig.repo && savedConfig.token) {
+      setConfig(savedConfig)
+      initGitHubService(savedConfig)
+      setIsConfigured(true)
+      onConfigured?.(true)
+    } else {
+      // 尝试从环境变量加载（如果有的话）
+      const envConfig: GitHubConfig = {
+        owner: import.meta.env.VITE_GITHUB_OWNER || '',
+        repo: import.meta.env.VITE_GITHUB_REPO || '',
+        token: import.meta.env.VITE_GITHUB_TOKEN || '',
+        branch: import.meta.env.VITE_GITHUB_BRANCH || 'main'
+      }
+      
+      if (envConfig.owner && envConfig.repo && envConfig.token) {
+        setConfig(envConfig)
+        initGitHubService(envConfig)
         setIsConfigured(true)
         onConfigured?.(true)
-      } catch (error) {
-        console.error('加载 GitHub 配置失败:', error)
+      } else {
+        setIsConfigured(false)
+        onConfigured?.(false)
       }
     }
   }, [onConfigured])
 
-  // 保存配置到 localStorage
+  // 保存配置到加密存储
   const saveConfig = () => {
     if (!config.owner || !config.repo || !config.token) {
       setTestResult({ success: false, message: '请填写所有必填字段' })
@@ -49,11 +65,12 @@ export default function GitHubConfigComponent({ onConfigured }: GitHubConfigProp
     }
 
     try {
-      localStorage.setItem('github-config', JSON.stringify(config))
+      // 使用加密存储保存敏感配置
+      secureSetItem(GITHUB_CONFIG_KEY, config)
       initGitHubService(config)
       setIsConfigured(true)
       onConfigured?.(true)
-      setTestResult({ success: true, message: '配置已保存' })
+      setTestResult({ success: true, message: '配置已安全保存（已加密）' })
     } catch (error) {
       setTestResult({ success: false, message: '保存配置失败' })
     }
@@ -106,7 +123,7 @@ export default function GitHubConfigComponent({ onConfigured }: GitHubConfigProp
 
   // 清除配置
   const clearConfig = () => {
-    localStorage.removeItem('github-config')
+    secureRemoveItem(GITHUB_CONFIG_KEY)
     setConfig({ owner: '', repo: '', token: '', branch: 'main' })
     setIsConfigured(false)
     setTestResult(null)
@@ -121,9 +138,10 @@ export default function GitHubConfigComponent({ onConfigured }: GitHubConfigProp
             <CardTitle className="flex items-center gap-2">
               <Settings className="h-5 w-5" />
               GitHub 配置
+              <Shield className="h-4 w-4 text-green-600" title="数据已加密存储" />
             </CardTitle>
             <CardDescription>
-              配置 GitHub API 以支持直接上传图片到仓库
+              配置 GitHub API 以支持直接上传图片到仓库（数据将被加密存储）
             </CardDescription>
           </div>
           {isConfigured && (
@@ -136,6 +154,13 @@ export default function GitHubConfigComponent({ onConfigured }: GitHubConfigProp
       </CardHeader>
       
       <CardContent className="space-y-4">
+        <Alert>
+          <Shield className="h-4 w-4" />
+          <AlertDescription>
+            <strong>🔒 隐私保护：</strong>您的 GitHub Token 和配置信息将使用 AES 加密算法安全存储在本地，不会以明文形式保存。
+          </AlertDescription>
+        </Alert>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="owner">GitHub 用户名 *</Label>
@@ -159,7 +184,7 @@ export default function GitHubConfigComponent({ onConfigured }: GitHubConfigProp
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="token">Personal Access Token *</Label>
+          <Label htmlFor="token">Personal Access Token * 🔒</Label>
           <div className="relative">
             <Input
               id="token"
@@ -230,7 +255,7 @@ export default function GitHubConfigComponent({ onConfigured }: GitHubConfigProp
             onClick={saveConfig}
             disabled={!config.owner || !config.repo || !config.token}
           >
-            保存配置
+            🔒 安全保存
           </Button>
           
           {isConfigured && (

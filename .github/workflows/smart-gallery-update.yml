@@ -75,6 +75,9 @@ jobs:
       run: |
         echo "📊 生成图片元数据..."
         npm run gallery:metadata
+        
+        # 不再运行 update-gallery.js，因为我们使用动态加载
+        echo "✅ 元数据生成完成，跳过 gallery-store.tsx 更新"
     
     - name: Check for changes
       id: check_changes

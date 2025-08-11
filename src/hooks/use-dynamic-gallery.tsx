@@ -40,11 +40,14 @@ export function useDynamicGallery() {
       const metadataUrl = getAssetPath('/gallery-metadata.json');
       console.log('🔍 尝试加载图片元数据:', metadataUrl);
 
-      const response = await fetch(metadataUrl, {
+      // 添加时间戳参数强制刷新缓存
+      const timestamp = Date.now();
+      const response = await fetch(`${metadataUrl}?t=${timestamp}`, {
         cache: 'no-cache', // 确保获取最新数据
         headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
       });
 

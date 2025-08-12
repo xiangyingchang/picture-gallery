@@ -206,6 +206,80 @@ export class GitHubApiService {
   }
 
   /**
+   * 删除单个文件
+   */
+  async deleteFile(filePath: string): Promise<UploadResult> {
+    try {
+      console.log('🔍 开始删除文件:', filePath)
+      
+      // 首先获取文件的 SHA 值
+      const { exists, sha } = await this.checkFileExists(filePath)
+      
+      if (!exists || !sha) {
+        console.log('❌ 文件不存在:', filePath)
+        return {
+          success: false,
+          message: `文件不存在: ${filePath}`
+        }
+      }
+
+      console.log('✅ 文件存在，SHA:', sha)
+
+      // 删除文件
+      const response = await fetch(
+        `${this.baseUrl}/repos/${this.config.owner}/${this.config.repo}/contents/${filePath}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${this.config.token}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: `🗑️ 删除图片: ${filePath.split('/').pop()}`,
+            sha: sha,
+            branch: this.config.branch
+          }),
+        }
+      )
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('❌ GitHub API 删除失败:', errorData)
+        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      console.log('✅ GitHub 删除成功:', filePath)
+      return {
+        success: true,
+        message: '删除成功',
+        path: filePath
+      }
+
+    } catch (error) {
+      console.error('❌ GitHub 删除失败:', error)
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : '删除失败'
+      }
+    }
+  }
+
+  /**
+   * 批量删除文件
+   */
+  async deleteFiles(filePaths: string[]): Promise<UploadResult[]> {
+    const results: UploadResult[] = []
+    
+    for (const filePath of filePaths) {
+      const result = await this.deleteFile(filePath)
+      results.push(result)
+    }
+    
+    return results
+  }
+
+  /**
    * 触发 GitHub Actions 工作流（重新生成元数据）
    */
   async triggerWorkflow(workflowId: string = 'smart-gallery-update.yml'): Promise<boolean> {

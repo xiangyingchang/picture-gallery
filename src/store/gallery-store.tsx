@@ -2,6 +2,7 @@ import React, { createContext, useContext, useMemo, useState, useEffect } from "
 import { uploadImages, fetchImages, checkServerHealth, deleteImages } from "@/services/api"
 import { getAssetPath } from "@/utils/path-utils"
 import { useDynamicGallery } from "@/hooks/use-dynamic-gallery"
+import { getGitHubService } from "@/services/github-api"
 
 export type ImageItem = {
   id: string
@@ -85,7 +86,8 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
 
   // 使用动态图片加载 Hook
   const {
-    images: dynamicImages
+    images: dynamicImages,
+    removeImagesFromCache
   } = useDynamicGallery()
 
   // 检查服务器连接并加载图片
@@ -207,17 +209,135 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
       
       // 获取要删除的图片信息
       const imagesToDelete = images.filter(img => imageIds.includes(img.id))
-      const deleteRequests = imagesToDelete.map(img => ({
-        filename: img.filename || img.title,
-        folderPath: img.folderPath
-      }))
+      console.log('📋 要删除的图片信息:', imagesToDelete)
       
-      // 调用删除API
-      const response = await deleteImages(deleteRequests)
-      console.log('✅ 服务器删除成功:', response.message)
+      // 检查是否有GitHub服务可用
+      const githubService = getGitHubService()
+      
+      if (githubService) {
+        console.log('🔗 使用GitHub API删除图片')
+        
+        // 构建GitHub文件路径 - 使用元数据中的准确信息
+        const filePaths = imagesToDelete.map(img => {
+          let fullPath = ''
+          
+          console.log('🔍 处理图片删除:', {
+            id: img.id,
+            filename: img.filename,
+            title: img.title,
+            folderPath: img.folderPath,
+            fromUpload: img.fromUpload
+          })
+          
+          // 优先使用 filename，这是最准确的
+          if (img.filename) {
+            // 确保路径以 public/ 开头
+            const folderPath = img.folderPath.startsWith('public/') 
+              ? img.folderPath 
+              : `public/${img.folderPath}`
+            fullPath = `${folderPath}/${img.filename}`
+            console.log('📁 使用filename构建路径:', fullPath)
+            return fullPath
+          }
+          
+          // 如果没有filename，尝试从src中提取完整路径
+          if (img.src.includes('uploads/')) {
+            const pathMatch = img.src.match(/uploads\/\d{4}\/\d{2}\/[^/?]+/)
+            if (pathMatch) {
+              fullPath = `public/${pathMatch[0]}`
+              console.log('📁 从src提取路径:', fullPath)
+              return fullPath
+            }
+          }
+          
+          // 最后兜底方案：使用title，但这可能不准确
+          const filename = img.title || `image_${img.id}`
+          const folderPath = img.folderPath.startsWith('public/') 
+            ? img.folderPath 
+            : `public/${img.folderPath}`
+          fullPath = `${folderPath}/${filename}`
+          console.log('⚠️ 兜底路径（可能不准确）:', fullPath)
+          return fullPath
+        })
+        
+        console.log('📂 最终删除路径列表:', filePaths)
+        
+        // 调用GitHub删除API
+        const results = await githubService.deleteFiles(filePaths)
+        console.log('🔄 GitHub删除结果:', results)
+        
+        // 分析删除结果
+        const successfulDeletes = results.filter(r => r.success)
+        const failedDeletes = results.filter(r => !r.success)
+        
+        if (successfulDeletes.length > 0) {
+          console.log(`✅ 成功删除 ${successfulDeletes.length} 个文件`)
+        }
+        
+        if (failedDeletes.length > 0) {
+          console.warn(`⚠️ ${failedDeletes.length} 个文件删除失败:`, failedDeletes)
+          
+          // 检查是否都是因为文件不存在而失败
+          const notFoundErrors = failedDeletes.filter(f => 
+            f.message.includes('文件不存在') || 
+            f.message.includes('404') ||
+            f.message.includes('Not Found')
+          )
+          
+          if (notFoundErrors.length === failedDeletes.length) {
+            console.log('💡 所有失败都是因为文件不存在，这可能是示例图片或已被删除的图片')
+            // 对于不存在的文件，我们仍然从本地状态中移除
+          } else {
+            // 如果有其他类型的错误，抛出异常
+            const realErrors = failedDeletes.filter(f => 
+              !f.message.includes('文件不存在') && 
+              !f.message.includes('404') &&
+              !f.message.includes('Not Found')
+            )
+            if (realErrors.length > 0) {
+              throw new Error(`删除失败: ${realErrors.map(f => f.message).join(', ')}`)
+            }
+          }
+        }
+        
+        // 触发GitHub Actions重新生成元数据
+        try {
+          await githubService.triggerWorkflow()
+          console.log('🔄 已触发GitHub Actions更新元数据')
+        } catch (workflowError) {
+          console.warn('⚠️ 触发工作流失败，但删除操作已完成:', workflowError)
+        }
+        
+      } else if (serverConnected) {
+        console.log('🔗 使用本地服务器删除图片')
+        
+        // 使用本地服务器API
+        const deleteRequests = imagesToDelete.map(img => ({
+          filename: img.filename || img.title || `image_${img.id}`,
+          folderPath: img.folderPath
+        }))
+        
+        console.log('📋 服务器删除请求:', deleteRequests)
+        const response = await deleteImages(deleteRequests)
+        console.log('✅ 服务器删除成功:', response.message)
+        
+      } else {
+        throw new Error('无可用的删除服务：请配置GitHub Token或启动本地服务器')
+      }
       
       // 从本地状态中移除已删除的图片
       setImages(prev => prev.filter(img => !imageIds.includes(img.id)))
+      
+      // 同时从动态图片缓存中移除
+      if (removeImagesFromCache) {
+        removeImagesFromCache(imageIds)
+      }
+      
+      // 将删除的图片ID保存到本地存储，防止重新加载时出现
+      const deletedImages = JSON.parse(localStorage.getItem('deletedImages') || '[]')
+      const updatedDeletedImages = [...new Set([...deletedImages, ...imageIds])]
+      localStorage.setItem('deletedImages', JSON.stringify(updatedDeletedImages))
+      console.log('💾 已保存删除记录到本地存储:', updatedDeletedImages)
       
       // 清空选择状态
       setSelectedImages([])

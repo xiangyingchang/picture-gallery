@@ -38,6 +38,19 @@ jobs:
         echo "📊 生成最新图片元数据..."
         npm run gallery:metadata
         
+    - name: Commit metadata changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add public/gallery-metadata.json
+        if git diff --staged --quiet; then
+          echo "没有元数据更改需要提交"
+        else
+          git pull origin main --rebase
+          git commit -m "🤖 自动更新图片库元数据"
+          git push origin main
+        fi
+        
     - name: Build
       run: npm run build
       

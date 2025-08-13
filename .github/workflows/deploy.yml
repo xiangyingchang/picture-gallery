@@ -33,6 +33,11 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
+    - name: Generate gallery metadata
+      run: |
+        echo "📊 生成最新图片元数据..."
+        npm run gallery:metadata
+        
     - name: Build
       run: npm run build
       

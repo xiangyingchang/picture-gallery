@@ -8,7 +8,7 @@ const exifr = require('exifr');
  * 扫描 public/uploads/2025/08 目录，生成 JSON 清单
  */
 
-const UPLOADS_DIR = path.join(__dirname, '../public/uploads/2025/08');
+const UPLOADS_DIR = path.join(__dirname, '../public/uploads');
 const OUTPUT_FILE = path.join(__dirname, '../public/gallery-metadata.json');
 
 // 支持的图片格式
@@ -71,8 +71,8 @@ async function scanImagesDirectory() {
         const imageItem = {
           id: `img_${hash.substring(0, 8)}`,
           filename: filename,
-          path: `uploads/2025/08/${filename}`,
-          src: `/picture-gallery/uploads/2025/08/${filename}`,
+          path: `uploads/${filename}`,
+          src: `/picture-gallery/uploads/${filename}`,
           title: filename.replace(/\.[^/.]+$/, ''), // 移除扩展名
           size: stats.size,
           created: stats.created,

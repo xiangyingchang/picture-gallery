@@ -37,14 +37,14 @@ export default function App() {
   React.useEffect(() => {
     const initializeGitHubService = () => {
       // 首先尝试从加密存储读取配置
-      const savedConfig = secureGetItem('github_config_secure')
-      if (savedConfig && savedConfig.owner && savedConfig.repo && savedConfig.token) {
+      const savedConfig = secureGetItem('github_config_secure') as any
+      if (savedConfig && typeof savedConfig === 'object' && savedConfig.owner && savedConfig.repo && savedConfig.token) {
         console.log('🔧 从加密存储初始化GitHub服务')
         initGitHubService(savedConfig)
         return
       }
 
-      // 如果没有保存的配置，尝试从环境变量读取
+      // 如果没有保存的配置，尝试从环境变量读取（已移除敏感信息）
       const envConfig = {
         owner: import.meta.env.VITE_GITHUB_OWNER || '',
         repo: import.meta.env.VITE_GITHUB_REPO || '',

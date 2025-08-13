@@ -8,6 +8,8 @@ import TopNav from "./components/top-nav"
 import BottomNav from "./components/bottom-nav"
 import { AuthProvider, useAuth } from "./context/auth-context"
 import { GalleryProvider } from "./store/gallery-store"
+import { initGitHubService } from "./services/github-api"
+import { secureGetItem } from "./utils/crypto-utils"
 
 function Shell({ children }: { children: React.ReactNode }) {
   const location = useLocation()
@@ -31,6 +33,36 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  // 在应用启动时初始化GitHub服务
+  React.useEffect(() => {
+    const initializeGitHubService = () => {
+      // 首先尝试从加密存储读取配置
+      const savedConfig = secureGetItem('github_config_secure')
+      if (savedConfig && savedConfig.owner && savedConfig.repo && savedConfig.token) {
+        console.log('🔧 从加密存储初始化GitHub服务')
+        initGitHubService(savedConfig)
+        return
+      }
+
+      // 如果没有保存的配置，尝试从环境变量读取
+      const envConfig = {
+        owner: import.meta.env.VITE_GITHUB_OWNER || '',
+        repo: import.meta.env.VITE_GITHUB_REPO || '',
+        token: import.meta.env.VITE_GITHUB_TOKEN || '',
+        branch: import.meta.env.VITE_GITHUB_BRANCH || 'main'
+      }
+
+      if (envConfig.owner && envConfig.repo && envConfig.token) {
+        console.log('🔧 从环境变量初始化GitHub服务')
+        initGitHubService(envConfig)
+      } else {
+        console.log('⚠️ 未找到GitHub配置，需要手动配置')
+      }
+    }
+
+    initializeGitHubService()
+  }, [])
+
   return (
     <AuthProvider>
       <GalleryProvider>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>图片库健康检查</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .warning { background: #fff3cd; color: #856404; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>📊 图片库健康检查</h1>
+    <div id="status">检查中...</div>
+    
+    <script>
+        async function checkHealth() {
+            const statusDiv = document.getElementById('status');
+            
+            try {
+                // 获取线上元数据
+                const response = await fetch('/picture-gallery/gallery-metadata.json?t=' + Date.now());
+                const metadata = await response.json();
+                
+                const now = new Date();
+                const generated = new Date(metadata.generated);
+                const timeDiff = Math.floor((now - generated) / 1000 / 60); // 分钟
+                
+                let statusClass = 'success';
+                let message = `✅ 系统正常<br>
+                    📸 图片数量: ${metadata.count}<br>
+                    🕒 最后更新: ${metadata.generated}<br>
+                    ⏱️ 更新间隔: ${timeDiff} 分钟前`;
+                
+                if (timeDiff > 60) {
+                    statusClass = 'warning';
+                    message = `⚠️ 数据可能过期<br>` + message;
+                }
+                
+                statusDiv.innerHTML = `<div class="${statusClass}">${message}</div>`;
+                
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="error">❌ 检查失败: ${error.message}</div>`;
+            }
+        }
+        
+        checkHealth();
+        setInterval(checkHealth, 60000); // 每分钟检查一次
+    </script>
+</body>
+</html>

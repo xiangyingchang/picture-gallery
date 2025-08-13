@@ -34,7 +34,7 @@ type GalleryContextType = {
 
 const GalleryContext = createContext<GalleryContextType | undefined>(undefined)
 
-function monthFolderPath(date = new Date()) {
+function monthFolderPath() {
   // 统一使用 uploads 目录，不再按年月分层
   return `uploads`
 }

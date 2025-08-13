@@ -1,0 +1,253 @@
+name: 🤖 智能图片库自动同步
+
+on:
+  # 当 uploads 目录有任何变化时触发
+  push:
+    branches: [ main ]
+    paths:
+      - 'public/uploads/**'
+  
+  # 允许手动触发
+  workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: '强制重建元数据'
+        required: false
+        default: 'false'
+        type: boolean
+  
+  # 定时检查（每30分钟）
+  schedule:
+    - cron: '*/30 * * * *'
+
+# 权限设置
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# 确保只有一个工作流实例运行
+concurrency:
+  group: gallery-sync
+  cancel-in-progress: false
+
+jobs:
+  auto-sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 检出代码
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: 🔧 设置 Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: 📦 安装依赖
+      run: npm ci
+    
+    - name: 🔍 智能扫描图片
+      id: scan
+      run: |
+        echo "🔍 开始智能扫描图片目录..."
+        
+        # 确保目录存在
+        mkdir -p public/uploads/$(date +%Y)/$(date +%m)
+        
+        # 扫描所有图片文件
+        IMAGES=$(find public/uploads -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" -o -iname "*.gif" -o -iname "*.JPG" -o -iname "*.JPEG" -o -iname "*.PNG" \) 2>/dev/null | sort)
+        IMAGE_COUNT=$(echo "$IMAGES" | grep -c . || echo "0")
+        
+        echo "📊 发现图片总数: $IMAGE_COUNT"
+        echo "image_count=$IMAGE_COUNT" >> $GITHUB_OUTPUT
+        
+        # 检查是否有新图片（与现有元数据对比）
+        if [ -f "public/gallery-metadata.json" ]; then
+          CURRENT_COUNT=$(node -e "try { console.log(JSON.parse(require('fs').readFileSync('public/gallery-metadata.json', 'utf8')).count); } catch(e) { console.log('0'); }")
+          echo "📋 当前元数据记录: $CURRENT_COUNT 张图片"
+          
+          if [ "$IMAGE_COUNT" != "$CURRENT_COUNT" ]; then
+            echo "🆕 检测到图片数量变化: $CURRENT_COUNT → $IMAGE_COUNT"
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+            echo "count_change=$((IMAGE_COUNT - CURRENT_COUNT))" >> $GITHUB_OUTPUT
+          else
+            echo "✅ 图片数量无变化"
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "🆕 首次生成元数据"
+          echo "needs_update=true" >> $GITHUB_OUTPUT
+          echo "count_change=$IMAGE_COUNT" >> $GITHUB_OUTPUT
+        fi
+        
+        # 获取最新图片信息
+        if [ $IMAGE_COUNT -gt 0 ]; then
+          LATEST_IMAGE=$(echo "$IMAGES" | head -1)
+          LATEST_NAME=$(basename "$LATEST_IMAGE")
+          LATEST_SIZE=$(stat -f%z "$LATEST_IMAGE" 2>/dev/null || stat -c%s "$LATEST_IMAGE" 2>/dev/null || echo "0")
+          echo "latest_image=$LATEST_NAME" >> $GITHUB_OUTPUT
+          echo "latest_size=$LATEST_SIZE" >> $GITHUB_OUTPUT
+          echo "📸 最新图片: $LATEST_NAME (${LATEST_SIZE} bytes)"
+        fi
+    
+    - name: 📊 生成元数据
+      if: steps.scan.outputs.needs_update == 'true' || github.event.inputs.force_rebuild == 'true'
+      run: |
+        echo "📊 生成最新图片元数据..."
+        npm run gallery:metadata
+        
+        # 验证元数据完整性
+        METADATA_COUNT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('public/gallery-metadata.json', 'utf8')).count)")
+        ACTUAL_COUNT=${{ steps.scan.outputs.image_count }}
+        
+        if [ "$METADATA_COUNT" != "$ACTUAL_COUNT" ]; then
+          echo "❌ 元数据生成失败: 期望 $ACTUAL_COUNT, 实际 $METADATA_COUNT"
+          exit 1
+        fi
+        
+        echo "✅ 元数据验证通过: $METADATA_COUNT 张图片"
+    
+    - name: 📝 智能提交更改
+      if: steps.scan.outputs.needs_update == 'true' || github.event.inputs.force_rebuild == 'true'
+      run: |
+        # 配置 Git
+        git config --local user.email "action@github.com"
+        git config --local user.name "🤖 Smart Gallery Bot"
+        
+        # 检查是否有更改
+        if git diff --quiet; then
+          echo "ℹ️ 无文件更改，跳过提交"
+          exit 0
+        fi
+        
+        # 添加更改
+        git add public/gallery-metadata.json
+        
+        # 生成智能提交信息
+        CHANGE_TYPE=""
+        COUNT_CHANGE=${{ steps.scan.outputs.count_change }}
+        
+        if [ "$COUNT_CHANGE" -gt 0 ]; then
+          CHANGE_TYPE="新增 $COUNT_CHANGE 张图片"
+        elif [ "$COUNT_CHANGE" -lt 0 ]; then
+          CHANGE_TYPE="删除 $((0 - COUNT_CHANGE)) 张图片"
+        else
+          CHANGE_TYPE="更新元数据"
+        fi
+        
+        COMMIT_MSG="🤖 自动更新图片库 (${{ steps.scan.outputs.image_count }} 张图片)
+
+        📸 变更类型: $CHANGE_TYPE
+        🆕 最新图片: ${{ steps.scan.outputs.latest_image }}
+        📊 文件大小: ${{ steps.scan.outputs.latest_size }} bytes
+        🕒 处理时间: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        🔧 触发方式: GitHub 网页上传
+        
+        ✨ 自动化处理:
+        - ✅ 自动扫描新图片
+        - ✅ 自动生成元数据  
+        - ✅ 自动部署到 GitHub Pages
+        
+        🌐 访问地址: https://xiangyingchang.github.io/picture-gallery/
+        
+        [🤖 由 Smart Gallery Bot 自动处理]"
+        
+        git commit -m "$COMMIT_MSG"
+        echo "✅ 更改已提交"
+    
+    - name: 🚀 推送更改
+      if: steps.scan.outputs.needs_update == 'true' || github.event.inputs.force_rebuild == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: main
+    
+    - name: 🏗️ 构建项目
+      run: |
+        echo "🏗️ 构建 React 项目..."
+        npm run build
+        
+        # 验证构建结果
+        if [ ! -d "dist" ]; then
+          echo "❌ 构建失败: dist 目录不存在"
+          exit 1
+        fi
+        
+        echo "✅ 项目构建完成"
+    
+    - name: 🌐 配置 GitHub Pages
+      uses: actions/configure-pages@v4
+      with:
+        enablement: true
+    
+    - name: 📤 上传构建产物
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './dist'
+    
+    - name: 🚀 部署到 GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+    
+    - name: ✅ 部署后验证
+      run: |
+        echo "⏳ 等待 CDN 缓存刷新..."
+        sleep 60
+        
+        # 验证线上部署
+        EXPECTED_COUNT=${{ steps.scan.outputs.image_count }}
+        
+        for i in {1..5}; do
+          echo "🔍 第 $i 次验证..."
+          ONLINE_COUNT=$(curl -s "https://xiangyingchang.github.io/picture-gallery/gallery-metadata.json?t=$(date +%s)" | node -e "
+            let data = '';
+            process.stdin.on('data', chunk => data += chunk);
+            process.stdin.on('end', () => {
+              try {
+                const json = JSON.parse(data);
+                console.log(json.count);
+              } catch(e) {
+                console.log('0');
+              }
+            });
+          " 2>/dev/null || echo "0")
+          
+          if [ "$ONLINE_COUNT" = "$EXPECTED_COUNT" ]; then
+            echo "✅ 部署验证成功: $ONLINE_COUNT 张图片"
+            break
+          else
+            echo "⚠️ 验证失败: 期望 $EXPECTED_COUNT, 实际 $ONLINE_COUNT"
+            if [ $i -lt 5 ]; then
+              echo "⏳ 等待 30 秒后重试..."
+              sleep 30
+            fi
+          fi
+        done
+    
+    - name: 📊 生成部署报告
+      run: |
+        echo "## 🎉 智能图片库自动同步完成" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📊 同步统计" >> $GITHUB_STEP_SUMMARY
+        echo "- **图片总数**: ${{ steps.scan.outputs.image_count }} 张" >> $GITHUB_STEP_SUMMARY
+        echo "- **数量变化**: ${{ steps.scan.outputs.count_change }} 张" >> $GITHUB_STEP_SUMMARY
+        echo "- **最新图片**: ${{ steps.scan.outputs.latest_image }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **处理状态**: ✅ 成功" >> $GITHUB_STEP_SUMMARY
+        echo "- **部署时间**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🌐 访问链接" >> $GITHUB_STEP_SUMMARY
+        echo "- **图片库**: https://xiangyingchang.github.io/picture-gallery/" >> $GITHUB_STEP_SUMMARY
+        echo "- **元数据**: https://xiangyingchang.github.io/picture-gallery/gallery-metadata.json" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🎯 使用说明" >> $GITHUB_STEP_SUMMARY
+        echo "1. 在 GitHub 网页上传图片到 \`public/uploads/\` 目录" >> $GITHUB_STEP_SUMMARY
+        echo "2. 系统会自动检测并处理新图片" >> $GITHUB_STEP_SUMMARY
+        echo "3. 约 5-10 分钟后即可在网站上看到新图片" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🔧 故障排除" >> $GITHUB_STEP_SUMMARY
+        echo "如果图片未显示，可以手动触发此工作流重新处理。" >> $GITHUB_STEP_SUMMARY

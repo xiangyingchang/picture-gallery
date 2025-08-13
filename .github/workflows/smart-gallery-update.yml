@@ -46,7 +46,7 @@ jobs:
         echo "🔍 扫描图片目录..."
         
         # 创建图片目录（如果不存在）
-        mkdir -p public/uploads/2025/08
+        mkdir -p public/uploads
         
         # 扫描所有支持的图片格式
         IMAGES=$(find public/uploads -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" -o -iname "*.gif" \) 2>/dev/null || true)

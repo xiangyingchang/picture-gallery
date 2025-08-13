@@ -5,9 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:watch": "node scripts/dev-watch.js",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "watch:gallery": "node scripts/watch-gallery.js",
+    "update:metadata": "node scripts/update-metadata.js",
     "gallery:watch": "node scripts/watch-images.js",
     "gallery:watch-auto": "node scripts/watch-images.js --auto",
     "gallery:test": "node scripts/test-automation.js",

@@ -1,0 +1,915 @@
+{
+  "timestamp": "2025-08-13T11:25:36.574Z",
+  "cleanupTarget": "public/uploads/2025",
+  "operations": [
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/.DS_Store",
+      "size": 6148,
+      "timestamp": "2025-08-13T11:25:36.555Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/.DS_Store",
+      "size": 16388,
+      "timestamp": "2025-08-13T11:25:36.556Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/4346d1e6d04bf2e4b66a5aeccac4234d.jpg",
+      "size": 20550,
+      "timestamp": "2025-08-13T11:25:36.556Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/7dbe04adb3713da2c78a8e0f3c2663aa.jpg",
+      "size": 991663,
+      "timestamp": "2025-08-13T11:25:36.556Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0089.JPG",
+      "size": 446147,
+      "timestamp": "2025-08-13T11:25:36.556Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0104.JPG",
+      "size": 56453,
+      "timestamp": "2025-08-13T11:25:36.557Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0120.JPG",
+      "size": 192943,
+      "timestamp": "2025-08-13T11:25:36.557Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0162.JPG",
+      "size": 97706,
+      "timestamp": "2025-08-13T11:25:36.557Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0164.JPG",
+      "size": 63940,
+      "timestamp": "2025-08-13T11:25:36.558Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0190.JPG",
+      "size": 38098,
+      "timestamp": "2025-08-13T11:25:36.558Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0221.JPG",
+      "size": 86074,
+      "timestamp": "2025-08-13T11:25:36.558Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0226.JPG",
+      "size": 38800,
+      "timestamp": "2025-08-13T11:25:36.559Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0314.JPG",
+      "size": 82902,
+      "timestamp": "2025-08-13T11:25:36.559Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0357.JPG",
+      "size": 151662,
+      "timestamp": "2025-08-13T11:25:36.559Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0362_2.JPG",
+      "size": 215562,
+      "timestamp": "2025-08-13T11:25:36.559Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0485.JPG",
+      "size": 69837,
+      "timestamp": "2025-08-13T11:25:36.559Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0486.JPG",
+      "size": 122885,
+      "timestamp": "2025-08-13T11:25:36.559Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0561.JPG",
+      "size": 77790,
+      "timestamp": "2025-08-13T11:25:36.559Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0599.JPG",
+      "size": 76610,
+      "timestamp": "2025-08-13T11:25:36.560Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0662.JPG",
+      "size": 103166,
+      "timestamp": "2025-08-13T11:25:36.560Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0693.JPG",
+      "size": 98420,
+      "timestamp": "2025-08-13T11:25:36.560Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_0695.JPG",
+      "size": 84348,
+      "timestamp": "2025-08-13T11:25:36.560Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_1194.JPG",
+      "size": 125011,
+      "timestamp": "2025-08-13T11:25:36.560Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_1207_2.JPG",
+      "size": 272857,
+      "timestamp": "2025-08-13T11:25:36.561Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_1537.JPG",
+      "size": 21939,
+      "timestamp": "2025-08-13T11:25:36.561Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_1730.JPG",
+      "size": 108611,
+      "timestamp": "2025-08-13T11:25:36.561Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_1891.JPG",
+      "size": 116300,
+      "timestamp": "2025-08-13T11:25:36.561Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_2002.JPG",
+      "size": 44667,
+      "timestamp": "2025-08-13T11:25:36.561Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_2005.JPG",
+      "size": 67569,
+      "timestamp": "2025-08-13T11:25:36.561Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_2118.JPG",
+      "size": 112233,
+      "timestamp": "2025-08-13T11:25:36.561Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_2267 (1).JPG",
+      "size": 161030,
+      "timestamp": "2025-08-13T11:25:36.561Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_2304.JPG",
+      "size": 10385,
+      "timestamp": "2025-08-13T11:25:36.561Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_2326.JPG",
+      "size": 74171,
+      "timestamp": "2025-08-13T11:25:36.561Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_2548.JPG",
+      "size": 53938,
+      "timestamp": "2025-08-13T11:25:36.561Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_2562.JPG",
+      "size": 48369,
+      "timestamp": "2025-08-13T11:25:36.561Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_2656.JPG",
+      "size": 111335,
+      "timestamp": "2025-08-13T11:25:36.562Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_2679.JPG",
+      "size": 79673,
+      "timestamp": "2025-08-13T11:25:36.562Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_2957.JPG",
+      "size": 94085,
+      "timestamp": "2025-08-13T11:25:36.562Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_2974.JPG",
+      "size": 61087,
+      "timestamp": "2025-08-13T11:25:36.562Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3058.JPG",
+      "size": 93114,
+      "timestamp": "2025-08-13T11:25:36.562Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3160.JPG",
+      "size": 70907,
+      "timestamp": "2025-08-13T11:25:36.562Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3213.JPG",
+      "size": 44665,
+      "timestamp": "2025-08-13T11:25:36.562Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3568.JPG",
+      "size": 60812,
+      "timestamp": "2025-08-13T11:25:36.562Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3569.JPG",
+      "size": 81255,
+      "timestamp": "2025-08-13T11:25:36.562Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3610.JPG",
+      "size": 71672,
+      "timestamp": "2025-08-13T11:25:36.563Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3620.JPG",
+      "size": 96596,
+      "timestamp": "2025-08-13T11:25:36.563Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3636.JPG",
+      "size": 65253,
+      "timestamp": "2025-08-13T11:25:36.563Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3712.JPG",
+      "size": 34140,
+      "timestamp": "2025-08-13T11:25:36.563Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3756.JPG",
+      "size": 58338,
+      "timestamp": "2025-08-13T11:25:36.563Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3811.JPG",
+      "size": 53410,
+      "timestamp": "2025-08-13T11:25:36.563Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3824.JPG",
+      "size": 112028,
+      "timestamp": "2025-08-13T11:25:36.563Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3874.JPG",
+      "size": 112035,
+      "timestamp": "2025-08-13T11:25:36.563Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3911.JPG",
+      "size": 39942,
+      "timestamp": "2025-08-13T11:25:36.563Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3943.JPG",
+      "size": 55525,
+      "timestamp": "2025-08-13T11:25:36.563Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3946.JPG",
+      "size": 51304,
+      "timestamp": "2025-08-13T11:25:36.563Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3972.JPG",
+      "size": 175832,
+      "timestamp": "2025-08-13T11:25:36.564Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_3998.JPG",
+      "size": 66581,
+      "timestamp": "2025-08-13T11:25:36.564Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4013.JPG",
+      "size": 55382,
+      "timestamp": "2025-08-13T11:25:36.564Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4028.JPG",
+      "size": 88700,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4033.JPG",
+      "size": 54902,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4040.JPG",
+      "size": 48387,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4061.JPG",
+      "size": 117487,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4069.JPG",
+      "size": 53671,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4107.JPG",
+      "size": 57481,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4112.JPG",
+      "size": 102425,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4128.JPG",
+      "size": 58163,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4137.JPG",
+      "size": 33626,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4164.JPG",
+      "size": 97768,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4364 (1).JPG",
+      "size": 137722,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4390.JPG",
+      "size": 81074,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4495.JPG",
+      "size": 19745,
+      "timestamp": "2025-08-13T11:25:36.565Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4759.JPG",
+      "size": 96101,
+      "timestamp": "2025-08-13T11:25:36.566Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4906.JPG",
+      "size": 172097,
+      "timestamp": "2025-08-13T11:25:36.566Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_4925.JPG",
+      "size": 131655,
+      "timestamp": "2025-08-13T11:25:36.566Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5008.JPG",
+      "size": 40372,
+      "timestamp": "2025-08-13T11:25:36.566Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5038.JPG",
+      "size": 197787,
+      "timestamp": "2025-08-13T11:25:36.566Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5050 (1).JPG",
+      "size": 164525,
+      "timestamp": "2025-08-13T11:25:36.566Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5070.JPG",
+      "size": 206925,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5119.JPG",
+      "size": 152194,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5215.JPG",
+      "size": 169904,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5381.JPG",
+      "size": 69786,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5395.JPG",
+      "size": 106747,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5422.JPG",
+      "size": 92840,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5425.JPG",
+      "size": 32069,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5427.JPG",
+      "size": 20594,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5439.JPG",
+      "size": 244700,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5442.JPG",
+      "size": 61620,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5459.JPG",
+      "size": 133962,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5465.JPG",
+      "size": 62300,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5501.JPG",
+      "size": 187006,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5514.JPG",
+      "size": 241007,
+      "timestamp": "2025-08-13T11:25:36.567Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5671.JPG",
+      "size": 92266,
+      "timestamp": "2025-08-13T11:25:36.568Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5701.jpeg",
+      "size": 3335200,
+      "timestamp": "2025-08-13T11:25:36.568Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5769.JPG",
+      "size": 128458,
+      "timestamp": "2025-08-13T11:25:36.568Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5779.JPG",
+      "size": 192591,
+      "timestamp": "2025-08-13T11:25:36.568Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_5825.JPG",
+      "size": 61875,
+      "timestamp": "2025-08-13T11:25:36.568Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6060.JPG",
+      "size": 116969,
+      "timestamp": "2025-08-13T11:25:36.568Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6143.JPG",
+      "size": 5676,
+      "timestamp": "2025-08-13T11:25:36.568Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6181.JPG",
+      "size": 50307,
+      "timestamp": "2025-08-13T11:25:36.568Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6271.JPG",
+      "size": 48329,
+      "timestamp": "2025-08-13T11:25:36.568Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6325.JPG",
+      "size": 51068,
+      "timestamp": "2025-08-13T11:25:36.569Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6333.JPG",
+      "size": 113476,
+      "timestamp": "2025-08-13T11:25:36.569Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6377.JPG",
+      "size": 160507,
+      "timestamp": "2025-08-13T11:25:36.569Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6394.JPG",
+      "size": 82788,
+      "timestamp": "2025-08-13T11:25:36.569Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6441.JPG",
+      "size": 236897,
+      "timestamp": "2025-08-13T11:25:36.569Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6447.JPG",
+      "size": 51535,
+      "timestamp": "2025-08-13T11:25:36.569Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6451.JPG",
+      "size": 159870,
+      "timestamp": "2025-08-13T11:25:36.569Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6506.JPG",
+      "size": 186100,
+      "timestamp": "2025-08-13T11:25:36.569Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6509.JPG",
+      "size": 104391,
+      "timestamp": "2025-08-13T11:25:36.569Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6602.JPG",
+      "size": 98116,
+      "timestamp": "2025-08-13T11:25:36.569Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6603.JPG",
+      "size": 85161,
+      "timestamp": "2025-08-13T11:25:36.569Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6638.JPG",
+      "size": 118895,
+      "timestamp": "2025-08-13T11:25:36.569Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6645.JPG",
+      "size": 78095,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6650.JPG",
+      "size": 99771,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6657.JPG",
+      "size": 57344,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6666.JPG",
+      "size": 130933,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6683.JPG",
+      "size": 108181,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6697.JPG",
+      "size": 85370,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6735.JPG",
+      "size": 289829,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6739.JPG",
+      "size": 97556,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6756.JPG",
+      "size": 95670,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6819.JPG",
+      "size": 119745,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_6980.JPG",
+      "size": 93314,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_7087 (1).JPG",
+      "size": 115409,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_7096.JPG",
+      "size": 159412,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_7122.JPG",
+      "size": 203244,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_7154.JPG",
+      "size": 197856,
+      "timestamp": "2025-08-13T11:25:36.570Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_7246.JPG",
+      "size": 193255,
+      "timestamp": "2025-08-13T11:25:36.571Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_7319.JPG",
+      "size": 219685,
+      "timestamp": "2025-08-13T11:25:36.571Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_7672.JPG",
+      "size": 162954,
+      "timestamp": "2025-08-13T11:25:36.571Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_7886.JPG",
+      "size": 176918,
+      "timestamp": "2025-08-13T11:25:36.571Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_8220.JPG",
+      "size": 111763,
+      "timestamp": "2025-08-13T11:25:36.571Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_8410.JPG",
+      "size": 220730,
+      "timestamp": "2025-08-13T11:25:36.571Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_8455.JPG",
+      "size": 215511,
+      "timestamp": "2025-08-13T11:25:36.571Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_8483 (1).JPG",
+      "size": 91556,
+      "timestamp": "2025-08-13T11:25:36.572Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_8581.JPG",
+      "size": 199174,
+      "timestamp": "2025-08-13T11:25:36.572Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_8806.jpeg",
+      "size": 269353,
+      "timestamp": "2025-08-13T11:25:36.572Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/IMG_9724.JPG",
+      "size": 45116,
+      "timestamp": "2025-08-13T11:25:36.572Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/a5257b1a907a8919ee4ca02e168958a0.JPG",
+      "size": 181994,
+      "timestamp": "2025-08-13T11:25:36.572Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/a89f624fe6feff074da8209b4a2f5ae2.jpg",
+      "size": 11279577,
+      "timestamp": "2025-08-13T11:25:36.572Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/mmexport1729696189561.png",
+      "size": 52324,
+      "timestamp": "2025-08-13T11:25:36.572Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/mmexport1734244006861.jpg",
+      "size": 135928,
+      "timestamp": "2025-08-13T11:25:36.572Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/mmexport1735056004829.jpg",
+      "size": 60423,
+      "timestamp": "2025-08-13T11:25:36.572Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/mmexport1735711028629.jpg",
+      "size": 178445,
+      "timestamp": "2025-08-13T11:25:36.572Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/mmexport1735908496461.jpg",
+      "size": 122822,
+      "timestamp": "2025-08-13T11:25:36.573Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/mmexport1736050148665.jpg",
+      "size": 102101,
+      "timestamp": "2025-08-13T11:25:36.573Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/mmexport1736780324615.jpg",
+      "size": 42432,
+      "timestamp": "2025-08-13T11:25:36.573Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/mmexport1736832843760.jpg",
+      "size": 52408,
+      "timestamp": "2025-08-13T11:25:36.573Z"
+    },
+    {
+      "action": "delete_file",
+      "path": "public/uploads/2025/08/mmexport1736936463344.jpg",
+      "size": 24569,
+      "timestamp": "2025-08-13T11:25:36.573Z"
+    },
+    {
+      "action": "delete_directory",
+      "path": "public/uploads/2025/08",
+      "timestamp": "2025-08-13T11:25:36.573Z"
+    },
+    {
+      "action": "delete_directory",
+      "path": "public/uploads/2025",
+      "timestamp": "2025-08-13T11:25:36.573Z"
+    }
+  ],
+  "summary": {
+    "filesDeleted": 149,
+    "directoriesDeleted": 2,
+    "totalOperations": 151
+  }
+}

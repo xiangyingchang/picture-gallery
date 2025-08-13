@@ -65,13 +65,11 @@ export class GitHubApiService {
   }
 
   /**
-   * 获取当前年月路径
+   * 获取统一上传路径
    */
   private getCurrentPath(): string {
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, '0')
-    return `public/uploads/${year}/${month}`
+    // 统一使用 uploads 目录，不再按年月分层
+    return `public/uploads`
   }
 
   /**

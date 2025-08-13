@@ -9,7 +9,7 @@ export type ImageItem = {
   src: string
   title: string
   createdAt: string
-  folderPath: string // e.g. uploads/2025/08
+  folderPath: string // e.g. uploads
   size?: number
   width?: number
   height?: number
@@ -35,9 +35,8 @@ type GalleryContextType = {
 const GalleryContext = createContext<GalleryContextType | undefined>(undefined)
 
 function monthFolderPath(date = new Date()) {
-  const y = date.getFullYear()
-  const m = String(date.getMonth() + 1).padStart(2, "0")
-  return `uploads/${y}/${m}`
+  // 统一使用 uploads 目录，不再按年月分层
+  return `uploads`
 }
 
 const initialImages: ImageItem[] = [
@@ -242,7 +241,7 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
           
           // 如果没有filename，尝试从src中提取完整路径
           if (img.src.includes('uploads/')) {
-            const pathMatch = img.src.match(/uploads\/\d{4}\/\d{2}\/[^/?]+/)
+            const pathMatch = img.src.match(/uploads\/[^/?]+/)
             if (pathMatch) {
               fullPath = `public/${pathMatch[0]}`
               console.log('📁 从src提取路径:', fullPath)

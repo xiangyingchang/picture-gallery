@@ -4,7 +4,7 @@ import { useGallery } from "@/store/gallery-store"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
-import { Trash2, X, CheckSquare, ArrowUpDown, Clock } from "lucide-react"
+import { Trash2, X, CheckSquare, Menu } from "lucide-react"
 
 export default function GalleryPage() {
   const { toast } = useToast()
@@ -71,17 +71,16 @@ export default function GalleryPage() {
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div className="text-sm text-gray-500">共 {images.length} 张图片</div>
         
-        {/* 排序控制 - 简洁的文字链接样式 */}
+        {/* 排序控制 - 参考三条横线图标样式 */}
         {!isEditMode && (
           <button 
             onClick={() => setSort(sort === "newest" ? "oldest" : "newest")}
-            className="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 flex items-center gap-1 group"
+            className="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 flex items-center gap-1.5 group"
           >
-            <Clock className="h-3.5 w-3.5 opacity-60 group-hover:opacity-80" />
+            <Menu className="h-3.5 w-3.5 opacity-60 group-hover:opacity-80 rotate-90" />
             <span className="underline decoration-dotted underline-offset-4 decoration-gray-400">
               {sort === "newest" ? "最新优先" : "最旧优先"}
             </span>
-            <ArrowUpDown className="h-3 w-3 opacity-40 group-hover:opacity-60 transition-opacity" />
           </button>
         )}
         

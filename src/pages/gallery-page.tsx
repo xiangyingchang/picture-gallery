@@ -4,7 +4,7 @@ import { useGallery } from "@/store/gallery-store"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
-import { Trash2, X, CheckSquare, Menu } from "lucide-react"
+import { Trash2, X, CheckSquare } from "lucide-react"
 
 export default function GalleryPage() {
   const { toast } = useToast()

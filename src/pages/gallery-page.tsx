@@ -4,7 +4,7 @@ import { useGallery } from "@/store/gallery-store"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
-import { Trash2, X, CheckSquare } from "lucide-react"
+import { Trash2, X, CheckSquare, ArrowUpDown, Clock } from "lucide-react"
 
 export default function GalleryPage() {
   const { toast } = useToast()
@@ -18,7 +18,7 @@ export default function GalleryPage() {
     clearSelection,
     deleteSelectedImages 
   } = useGallery()
-  const [sort] = React.useState<"newest" | "oldest">("newest")
+  const [sort, setSort] = React.useState<"newest" | "oldest">("newest")
   const [isDeleting, setIsDeleting] = React.useState(false)
 
   React.useEffect(() => {
@@ -70,6 +70,20 @@ export default function GalleryPage() {
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="text-sm text-gray-500">共 {images.length} 张图片</div>
+        
+        {/* 排序控制按钮 */}
+        {!isEditMode && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setSort(sort === "newest" ? "oldest" : "newest")}
+            className="flex items-center gap-1"
+          >
+            <Clock className="h-4 w-4" />
+            {sort === "newest" ? "最新优先" : "最旧优先"}
+            <ArrowUpDown className="h-3 w-3" />
+          </Button>
+        )}
         
         {isEditMode && (
           <div className="ml-auto flex gap-2">

@@ -71,15 +71,38 @@ export default function GalleryPage() {
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div className="text-sm text-gray-500">共 {images.length} 张图片</div>
         
-        {/* 排序控制 - 参考三条横线图标样式 */}
+        {/* 排序控制 - 用三条横线长度表示排序方向 */}
         {!isEditMode && (
           <button 
             onClick={() => setSort(sort === "newest" ? "oldest" : "newest")}
-            className="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 flex items-center gap-1.5 group"
+            className="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 flex items-center gap-2 group"
+            title={sort === "newest" ? "当前：最新优先，点击切换到最旧优先" : "当前：最旧优先，点击切换到最新优先"}
           >
-            <Menu className="h-3.5 w-3.5 opacity-60 group-hover:opacity-80 rotate-90" />
-            <span className="underline decoration-dotted underline-offset-4 decoration-gray-400">
-              {sort === "newest" ? "最新优先" : "最旧优先"}
+            {/* 自定义排序图标 */}
+            <svg 
+              width="14" 
+              height="12" 
+              viewBox="0 0 14 12" 
+              className="opacity-60 group-hover:opacity-80 transition-opacity"
+            >
+              {sort === "newest" ? (
+                // 最新优先：长→中→短
+                <>
+                  <rect x="0" y="1" width="14" height="1.5" fill="currentColor" rx="0.75" />
+                  <rect x="2" y="5" width="10" height="1.5" fill="currentColor" rx="0.75" />
+                  <rect x="4" y="9" width="6" height="1.5" fill="currentColor" rx="0.75" />
+                </>
+              ) : (
+                // 最旧优先：短→中→长
+                <>
+                  <rect x="4" y="1" width="6" height="1.5" fill="currentColor" rx="0.75" />
+                  <rect x="2" y="5" width="10" height="1.5" fill="currentColor" rx="0.75" />
+                  <rect x="0" y="9" width="14" height="1.5" fill="currentColor" rx="0.75" />
+                </>
+              )}
+            </svg>
+            <span className="text-xs text-gray-500">
+              排序
             </span>
           </button>
         )}

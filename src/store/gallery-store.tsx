@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState, useEffect } from "react"
+import React, { createContext, useContext, useMemo, useState, useEffect, useRef } from "react"
 import { uploadImages, fetchImages, checkServerHealth, deleteImages } from "@/services/api"
 import { getAssetPath } from "@/utils/path-utils"
 import { useDynamicGallery } from "@/hooks/use-dynamic-gallery"
@@ -9,6 +9,7 @@ export type ImageItem = {
   src: string
   title: string
   createdAt: string
+  uploadedAt?: string
   folderPath: string // e.g. uploads
   size?: number
   width?: number
@@ -77,8 +78,17 @@ const initialImages: ImageItem[] = [
   },
 ]
 
+function sortImages(images: ImageItem[], key: "newest" | "oldest") {
+  return [...images].sort((a, b) => {
+    const aTime = Date.parse(a.uploadedAt || a.createdAt) || 0
+    const bTime = Date.parse(b.uploadedAt || b.createdAt) || 0
+    return key === "newest" ? bTime - aTime : aTime - bTime
+  })
+}
+
 export function GalleryProvider({ children }: { children: React.ReactNode }) {
   const [images, setImages] = useState<ImageItem[]>(initialImages)
+  const sortOrder = useRef<"newest" | "oldest">("newest")
   const [serverConnected, setServerConnected] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [selectedImages, setSelectedImages] = useState<string[]>([])
@@ -104,6 +114,7 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
             src: getAssetPath(img.src),
             title: img.title,
             createdAt: img.createdAt,
+            uploadedAt: img.createdAt,
             folderPath: img.folderPath,
             size: img.size,
             fromUpload: img.fromUpload,
@@ -111,7 +122,7 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
           }))
           
           // 只使用服务器图片，避免重复 key
-          setImages(serverImages.length > 0 ? serverImages : initialImages)
+          setImages(sortImages(serverImages.length > 0 ? serverImages : initialImages, sortOrder.current))
           console.log(`✅ 加载了 ${serverImages.length} 张服务器图片`)
         } else {
           console.log('⚠️ 服务器未连接，使用动态图片加载')
@@ -137,13 +148,14 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
         src: img.src,
         title: img.title,
         createdAt: img.created, // 使用 created 字段作为 createdAt
+        uploadedAt: img.uploadedAt,
         folderPath: img.path.replace(`/${img.filename}`, ''),
         size: img.size,
         fromUpload: true,
         filename: img.filename
       }))
       
-      setImages(convertedImages)
+      setImages(sortImages(convertedImages, sortOrder.current))
     }
   }, [dynamicImages, serverConnected])
 
@@ -162,6 +174,7 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
         src: getAssetPath(file.src),
         title: file.title,
         createdAt: file.createdAt,
+        uploadedAt: file.createdAt,
         folderPath: file.folderPath,
         size: file.size,
         fromUpload: file.fromUpload,
@@ -169,7 +182,7 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
       }))
       
       // 最新优先显示
-      setImages((prev) => [...items, ...prev])
+      setImages((prev) => sortImages([...items, ...prev], sortOrder.current))
       return items
       
     } catch (error) {
@@ -187,13 +200,14 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
         src: getAssetPath(img.src),
         title: img.title,
         createdAt: img.createdAt,
+        uploadedAt: img.createdAt,
         folderPath: img.folderPath,
         size: img.size,
         fromUpload: img.fromUpload,
         filename: img.filename,
       }))
       
-      setImages(serverImages.length > 0 ? serverImages : initialImages)
+      setImages(sortImages(serverImages.length > 0 ? serverImages : initialImages, sortOrder.current))
       console.log(`✅ 刷新完成，加载了 ${serverImages.length} 张图片`)
     } catch (error) {
       console.error('❌ 刷新图片列表失败:', error)
@@ -371,13 +385,8 @@ export function GalleryProvider({ children }: { children: React.ReactNode }) {
   const getById = (id: string) => images.find((i) => i.id === id)
 
   const sortBy = (key: "newest" | "oldest") => {
-    setImages((prev) =>
-      [...prev].sort((a, b) =>
-        key === "newest"
-          ? +new Date(b.createdAt) - +new Date(a.createdAt)
-          : +new Date(a.createdAt) - +new Date(b.createdAt)
-      )
-    )
+    sortOrder.current = key
+    setImages((prev) => sortImages(prev, key))
   }
 
   const value = useMemo(

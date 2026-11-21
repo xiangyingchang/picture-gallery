@@ -67,12 +67,17 @@ jobs:
         # 检查是否有新图片（与现有元数据对比）
         if [ -f "public/gallery-metadata.json" ]; then
           CURRENT_COUNT=$(node -e "try { console.log(JSON.parse(require('fs').readFileSync('public/gallery-metadata.json', 'utf8')).count); } catch(e) { console.log('0'); }")
+          MISSING_UPLOAD_TIMESTAMPS=$(node -e "try { const data = JSON.parse(require('fs').readFileSync('public/gallery-metadata.json', 'utf8')); console.log((data.images || []).some(image => !image.uploadedAt)); } catch(e) { console.log('true'); }")
           echo "📋 当前元数据记录: $CURRENT_COUNT 张图片"
           
           if [ "$IMAGE_COUNT" != "$CURRENT_COUNT" ]; then
             echo "🆕 检测到图片数量变化: $CURRENT_COUNT → $IMAGE_COUNT"
             echo "needs_update=true" >> $GITHUB_OUTPUT
             echo "count_change=$((IMAGE_COUNT - CURRENT_COUNT))" >> $GITHUB_OUTPUT
+          elif [ "$MISSING_UPLOAD_TIMESTAMPS" = "true" ]; then
+            echo "🕒 图片元数据缺少上传时间，重新生成"
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+            echo "count_change=0" >> $GITHUB_OUTPUT
           else
             echo "✅ 图片数量无变化"
             echo "needs_update=false" >> $GITHUB_OUTPUT

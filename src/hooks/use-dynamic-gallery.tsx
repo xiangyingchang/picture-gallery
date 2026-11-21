@@ -10,6 +10,7 @@ export interface DynamicImageItem {
   size: number;
   created: string;
   modified: string;
+  uploadedAt?: string;
   hash: string;
 }
 

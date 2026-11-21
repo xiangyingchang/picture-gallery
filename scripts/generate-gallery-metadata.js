@@ -1,7 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { execFileSync } = require('child_process');
 const exifr = require('exifr');
+
+const REPOSITORY_ROOT = path.join(__dirname, '..');
 
 /**
  * 生成图片库元数据文件
@@ -17,6 +20,32 @@ const SUPPORTED_FORMATS = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
 function generateFileHash(filePath) {
   const fileBuffer = fs.readFileSync(filePath);
   return crypto.createHash('md5').update(fileBuffer).digest('hex');
+}
+
+function getUploadTime(filePath) {
+  const relativePath = path.relative(REPOSITORY_ROOT, filePath).replace(/\\/g, '/');
+
+  try {
+    const history = execFileSync(
+      'git',
+      ['log', '--follow', '--diff-filter=A', '--format=%cI', '--', relativePath],
+      {
+        cwd: REPOSITORY_ROOT,
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore']
+      }
+    ).trim();
+
+    const uploadedAt = history.split(/\r?\n/)[0];
+    if (uploadedAt && !Number.isNaN(Date.parse(uploadedAt))) {
+      return new Date(uploadedAt).toISOString();
+    }
+  } catch (error) {
+    console.log(`⚠️  Git 上传记录不可用: ${path.basename(filePath)}`);
+  }
+
+  // For files outside Git history, use the local file creation time as a fallback.
+  return fs.statSync(filePath).birthtime.toISOString();
 }
 
 async function getFileStats(filePath) {
@@ -42,7 +71,8 @@ async function getFileStats(filePath) {
   return {
     size: stats.size,
     created: actualCreatedTime.toISOString(),
-    modified: stats.mtime.toISOString()
+    modified: stats.mtime.toISOString(),
+    uploadedAt: getUploadTime(filePath)
   };
 }
 
@@ -77,6 +107,7 @@ async function scanImagesDirectory() {
           size: stats.size,
           created: stats.created,
           modified: stats.modified,
+          uploadedAt: stats.uploadedAt,
           hash: hash
         };
         
@@ -88,8 +119,8 @@ async function scanImagesDirectory() {
     }
   }
 
-  // 按创建时间排序（最新的在前）
-  images.sort((a, b) => new Date(b.created) - new Date(a.created));
+  // 按上传时间排序（最新的在前）
+  images.sort((a, b) => Date.parse(b.uploadedAt) - Date.parse(a.uploadedAt));
   
   return images;
 }
